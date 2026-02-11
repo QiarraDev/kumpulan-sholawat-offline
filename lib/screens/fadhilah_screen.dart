@@ -10,67 +10,79 @@ class FadhilahScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 150.0,
+            expandedHeight: 220.0,
             pinned: true,
+            backgroundColor: Colors.green.shade900,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 'Keutamaan Sholawat',
-                style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.white),
+                style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
               ),
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Colors.green.shade900, Colors.green.shade600],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.green.shade800, Colors.green.shade900],
                   ),
                 ),
                 child: Center(
-                  child: Icon(
-                    Icons.auto_stories,
-                    size: 80,
-                    color: Colors.white.withOpacity(0.2),
+                  child: Opacity(
+                    opacity: 0.15,
+                    child: Icon(Icons.star_outline, size: 120, color: Colors.white),
                   ),
                 ),
               ),
             ),
           ),
-          SliverPadding(
-            padding: const EdgeInsets.all(20),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                _buildVerseSection(),
-                const SizedBox(height: 24),
-                _buildVirtueCard(
-                  context,
-                  'Mendapat Balasan 10 Kali Lipat',
-                  'Barangsiapa yang bershalawat kepadaku sekali, maka Allah akan bershalawat kepadanya sepuluh kali.',
-                  'HR. Muslim',
-                  Icons.star,
-                ),
-                _buildVirtueCard(
-                  context,
-                  'Syafa\'at di Hari Kiamat',
-                  'Orang yang paling berhak mendapatkan syafa’atku di hari kiamat adalah orang yang paling banyak bershalawat kepadaku.',
-                  'HR. Tirmidzi',
-                  Icons.favorite,
-                ),
-                _buildVirtueCard(
-                  context,
-                  'Doa Menjadi Mustajab',
-                  'Doa itu terhenti di antara langit dan bumi, tidak akan naik hingga pembacanya bersholawat kepada Nabi SAW.',
-                  'HR. Tirmidzi',
-                  Icons.auto_awesome,
-                ),
-                _buildVirtueCard(
-                  context,
-                  'Penghapus Dosa & Derajat Naik',
-                  'Allah akan menuliskan baginya sepuluh kebaikan, menghapuskan sepuluh keburukan, dan mengangkat baginya sepuluh derajat.',
-                  'HR. Ahmad',
-                  Icons.trending_up,
-                ),
-                const SizedBox(height: 40),
-              ]),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildVerseSection(),
+                  const SizedBox(height: 30),
+                  Text(
+                    'Fadhilah Dari Hadits',
+                    style: GoogleFonts.outfit(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green.shade900,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Balasan 10 Kali Lipat',
+                    desc: 'Barangsiapa bershalawat kepadaku sekali, maka Allah akan bershalawat kepadanya sepuluh kali.',
+                    source: 'HR. Muslim',
+                    icon: Icons.auto_awesome,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Syafaat Rasulullah',
+                    desc: 'Orang yang paling berhak mendapatkan syafaatku di hari kiamat adalah orang yang paling banyak bershalawat kepadaku.',
+                    source: 'HR. Tirmidzi',
+                    icon: Icons.favorite,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Doa Yang Terkabul',
+                    desc: 'Setiap doa itu terhalang (untuk dikabulkan) sampai dibacakan sholawat atas Nabi shallallahu ‘alaihi wa sallam.',
+                    source: 'HR. Tirmidzi',
+                    icon: Icons.verified,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Penghapus Kesedihan',
+                    desc: 'Jika engkau melakukan itu (banyak bersholawat), maka kegelisahanmu akan dihilangkan dan dosamu akan diampuni.',
+                    source: 'HR. Tirmidzi',
+                    icon: Icons.sentiment_very_satisfied,
+                  ),
+                  const SizedBox(height: 50),
+                ],
+              ),
             ),
           ),
         ],
@@ -82,8 +94,15 @@ class FadhilahScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.green.shade50,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
         border: Border.all(color: Colors.green.shade100),
       ),
       child: Column(
@@ -99,21 +118,21 @@ class FadhilahScreen extends StatelessWidget {
               color: Colors.green.shade900,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Text(
             '"Sesungguhnya Allah dan malaikat-malaikat-Nya bershalawat untuk Nabi. Wahai orang-orang yang beriman, bershalawatlah kalian untuk Nabi dan ucapkanlah salam penghormatan kepadanya."',
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
-              fontSize: 14,
+              fontSize: 15,
               fontStyle: FontStyle.italic,
-              color: Colors.green.shade900,
+              color: Colors.grey.shade800,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Text(
             '(QS. Al-Ahzab: 56)',
             style: GoogleFonts.outfit(
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.bold,
               color: Colors.green.shade700,
             ),
@@ -123,63 +142,60 @@ class FadhilahScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVirtueCard(
-      BuildContext context, String title, String desc, String source, IconData icon) {
-    return Card(
-      elevation: 0,
+  Widget _buildVirtueCard(BuildContext context, {required String title, required String desc, required String source, required IconData icon}) {
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(color: Colors.grey.shade100),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.green.shade700,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Icon(icon, color: Colors.white, size: 24),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              shape: BoxShape.circle,
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.outfit(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
+            child: Icon(icon, color: Colors.green.shade700, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.outfit(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    desc,
-                    style: GoogleFonts.outfit(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                      height: 1.5,
-                    ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  desc,
+                  style: GoogleFonts.outfit(
+                    fontSize: 14,
+                    color: Colors.grey.shade700,
+                    height: 1.4,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    source,
-                    style: GoogleFonts.outfit(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.green.shade700,
-                    ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  source,
+                  style: GoogleFonts.outfit(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green.shade700,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

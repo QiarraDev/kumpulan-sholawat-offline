@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/sholawat.dart';
 import '../providers/audio_provider.dart';
 import '../providers/sholawat_provider.dart';
+import 'doa_sebelum_screen.dart';
 
 class DetailScreen extends ConsumerStatefulWidget {
   final Sholawat sholawat;
@@ -155,6 +156,31 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                         ),
                       ),
                       const SizedBox(height: 48),
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const DoaSebelumScreen()),
+                          );
+                        },
+                        icon: const Icon(Icons.auto_stories, color: Colors.green),
+                        label: Text(
+                          'BACA NIAT & ADAB',
+                          style: GoogleFonts.outfit(
+                            color: Colors.green.shade700,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.green.shade50,
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
                       // ARABIC TEXT
                       Container(
                         width: double.infinity,

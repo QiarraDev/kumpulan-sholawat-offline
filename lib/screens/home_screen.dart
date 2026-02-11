@@ -7,6 +7,7 @@ import '../models/sholawat.dart';
 import 'detail_screen.dart';
 import 'settings_screen.dart';
 import 'fadhilah_screen.dart';
+import 'doa_sebelum_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -43,43 +44,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
-                    expandedHeight: 200.0,
+                    expandedHeight: 260.0,
                     floating: false,
                     pinned: true,
+                    backgroundColor: Colors.green.shade900,
+                    iconTheme: const IconThemeData(color: Colors.white),
                     flexibleSpace: FlexibleSpaceBar(
-                      background: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image.asset(
-                            'assets/images/banner_calligraphy.png',
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withOpacity(0.5),
-                                ],
+                      background: Container(
+                        color: const Color(0xFF003322), // Dark green matching the banner
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(
+                              'assets/images/banner_calligraphy.png',
+                              fit: BoxFit.contain, // Shows the whole frame/bingkai
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  stops: const [0.0, 0.2, 0.8, 1.0],
+                                  colors: [
+                                    Colors.black.withOpacity(0.4),
+                                    Colors.transparent,
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(0.4),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     actions: [
-                      IconButton(
-                        icon: Icon(_showOnlyFavorites ? Icons.favorite : Icons.favorite_border),
+                      _buildAppBarIcon(
+                        icon: _showOnlyFavorites ? Icons.favorite : Icons.favorite_border,
+                        color: _showOnlyFavorites ? Colors.red : Colors.white,
                         onPressed: () {
                           setState(() {
                             _showOnlyFavorites = !_showOnlyFavorites;
                           });
                         },
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.info_outline),
+                      _buildAppBarIcon(
+                        icon: Icons.info_outline,
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -87,8 +97,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           );
                         },
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.settings),
+                      _buildAppBarIcon(
+                        icon: Icons.settings,
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -96,6 +106,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           );
                         },
                       ),
+                      const SizedBox(width: 8),
                     ],
                   ),
                   SliverToBoxAdapter(
@@ -139,6 +150,69 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ),
                                 );
                               }).toList(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _buildInfoCard(
+                              title: 'Doa & Adab',
+                              subtitle: 'Niat bersholawat',
+                              icon: Icons.auto_stories,
+                              colors: [Colors.green.shade800, Colors.green.shade600],
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const DoaSebelumScreen()),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildInfoCard(
+                              title: 'Keutamaan',
+                              subtitle: 'Fadhilah sholawat',
+                              icon: Icons.star_rounded,
+                              colors: [Colors.amber.shade800, Colors.amber.shade600],
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const FadhilahScreen()),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Daftar Sholawat',
+                            style: GoogleFonts.outfit(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                          Text(
+                            '${filteredList.length} Item',
+                            style: GoogleFonts.outfit(
+                              fontSize: 12,
+                              color: Colors.grey.shade500,
                             ),
                           ),
                         ],
@@ -249,6 +323,79 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+
+  Widget _buildAppBarIcon({required IconData icon, Color? color, required VoidCallback onPressed}) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.3),
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: color ?? Colors.white, size: 20),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
+  Widget _buildInfoCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required List<Color> colors,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: colors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: colors.first.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: Colors.white, size: 20),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: GoogleFonts.outfit(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              subtitle,
+              style: GoogleFonts.outfit(
+                color: Colors.white.withOpacity(0.9),
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class MiniPlayer extends ConsumerWidget {
@@ -262,71 +409,84 @@ class MiniPlayer extends ConsumerWidget {
     final isPlaying = ref.watch(isPlayingProvider).value ?? false;
 
     return Container(
-      margin: const EdgeInsets.all(12),
-      height: 70,
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      height: 75,
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           )
         ],
-      ),
-      child: ListTile(
-        leading: Container(
-          width: 45,
-          height: 45,
-          decoration: BoxDecoration(
-            color: Colors.green.shade700,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: const Icon(Icons.music_note, color: Colors.white),
-        ),
-        title: Text(
-          currentSholawat.title,
-          style: GoogleFonts.outfit(fontWeight: FontWeight.w600, fontSize: 14),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          currentSholawat.category,
-          style: GoogleFonts.outfit(fontSize: 11),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: Icon(isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded),
-              iconSize: 30,
-              color: Colors.green.shade700,
-              onPressed: () {
-                if (isPlaying) {
-                  ref.read(audioPlayerServiceProvider).pause();
-                } else {
-                  ref.read(audioPlayerServiceProvider).resume();
-                }
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.close_rounded),
-              onPressed: () {
-                ref.read(audioPlayerServiceProvider).stop();
-                ref.read(currentSholawatProvider.notifier).state = null;
-              },
-            ),
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            Theme.of(context).cardColor,
+            Colors.green.shade50.withOpacity(0.5),
           ],
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DetailScreen(sholawat: currentSholawat),
+      ),
+      child: Center(
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          leading: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.green.shade600, Colors.green.shade800],
+              ),
+              borderRadius: BorderRadius.circular(15),
             ),
-          );
-        },
+            child: const Icon(Icons.music_note_rounded, color: Colors.white),
+          ),
+          title: Text(
+            currentSholawat.title,
+            style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 16),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            currentSholawat.category,
+            style: GoogleFonts.outfit(fontSize: 12, color: Colors.green.shade700),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_filled_rounded),
+                iconSize: 42,
+                color: Colors.green.shade700,
+                onPressed: () {
+                  if (isPlaying) {
+                    ref.read(audioPlayerServiceProvider).pause();
+                  } else {
+                    ref.read(audioPlayerServiceProvider).resume();
+                  }
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.close_rounded, size: 20),
+                onPressed: () {
+                  ref.read(audioPlayerServiceProvider).stop();
+                  ref.read(currentSholawatProvider.notifier).state = null;
+                },
+              ),
+            ],
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailScreen(sholawat: currentSholawat),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
