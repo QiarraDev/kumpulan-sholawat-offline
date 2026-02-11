@@ -24,6 +24,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<String>? _filterByHajatTitles;
 
   final List<String> _categories = ['Semua', 'Populer', 'Klasik'];
+  final ScrollController _hajatScrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _hajatScrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -268,16 +275,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Berdasarkan Hajat',
-                            style: GoogleFonts.outfit(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade800,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Berdasarkan Hajat',
+                                style: GoogleFonts.outfit(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade800,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.arrow_forward_rounded, color: Colors.green.shade600, size: 24),
+                                onPressed: () {
+                                  _hajatScrollController.animateTo(
+                                    _hajatScrollController.offset + 200,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 12),
                           SingleChildScrollView(
+                            controller: _hajatScrollController,
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children: [
@@ -305,6 +328,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   color: Colors.purple.shade600,
                                   onTap: () => _filterByHajat(['Sholawat Badar', 'Sholawat Ibrahimiyah']),
                                 ),
+                                const SizedBox(width: 8),
+                                Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey.shade300, size: 14),
+                                const SizedBox(width: 16),
                               ],
                             ),
                           ),

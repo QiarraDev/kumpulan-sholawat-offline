@@ -5,6 +5,7 @@ import '../models/sholawat.dart';
 import '../providers/audio_provider.dart';
 import '../providers/sholawat_provider.dart';
 import 'doa_sebelum_screen.dart';
+import '../services/download_service.dart';
 
 class DetailScreen extends ConsumerStatefulWidget {
   final Sholawat sholawat;
@@ -335,6 +336,27 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                           iconSize: 32,
                           icon: const Icon(Icons.timer_outlined),
                           onPressed: () => _showSleepTimerSheet(context, ref),
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          iconSize: 32,
+                          icon: const Icon(Icons.download_for_offline_rounded),
+                          onPressed: () async {
+                            final result = await DownloadService.downloadAudio(
+                              currentSholawat.audio,
+                              "${currentSholawat.title.replaceAll(' ', '_')}.mp3",
+                            );
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(result ?? "Gagal mengunduh"),
+                                  backgroundColor: result?.contains("Saved") == true 
+                                      ? Colors.green.shade800 
+                                      : Colors.red.shade800,
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ],
                     ),
