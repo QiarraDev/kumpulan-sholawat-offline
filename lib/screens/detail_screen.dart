@@ -14,19 +14,9 @@ class DetailScreen extends ConsumerStatefulWidget {
 
 class _DetailScreenState extends ConsumerState<DetailScreen> {
   @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      final current = ref.read(currentSholawatProvider);
-      if (current?.id != widget.sholawat.id) {
-        ref.read(currentSholawatProvider.notifier).state = widget.sholawat;
-        ref.read(audioPlayerServiceProvider).playSholawat(widget.sholawat);
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // Watch current sholawat so UI updates when song changes in playlist
+    final currentSholawat = ref.watch(currentSholawatProvider) ?? widget.sholawat;
     final isPlaying = ref.watch(isPlayingProvider).value ?? false;
     final position = ref.watch(positionProvider).value ?? Duration.zero;
     final duration = ref.watch(durationProvider).value ?? Duration.zero;
@@ -56,9 +46,9 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
-                    Text(
+                    const Text(
                       'Sedang Diputar',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -66,13 +56,13 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                     ),
                     IconButton(
                       icon: Icon(
-                        ref.watch(favoritesProvider).contains(widget.sholawat.id)
+                        ref.watch(favoritesProvider).contains(currentSholawat.id)
                             ? Icons.favorite
                             : Icons.favorite_border,
                         color: Colors.white,
                       ),
                       onPressed: () {
-                        ref.read(favoritesProvider.notifier).toggleFavorite(widget.sholawat.id);
+                        ref.read(favoritesProvider.notifier).toggleFavorite(currentSholawat.id);
                       },
                     ),
                   ],
@@ -101,7 +91,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                       ),
                       const SizedBox(height: 32),
                       Text(
-                        widget.sholawat.title,
+                        currentSholawat.title,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 26,
@@ -110,7 +100,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        widget.sholawat.category,
+                        currentSholawat.category,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.green.shade700,
@@ -134,7 +124,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                         child: Column(
                           children: [
                             Text(
-                              widget.sholawat.arabic,
+                              currentSholawat.arabic,
                               textAlign: TextAlign.center,
                               textDirection: TextDirection.rtl,
                               style: const TextStyle(
@@ -145,7 +135,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                             ),
                             const Divider(height: 32),
                             Text(
-                              widget.sholawat.latin,
+                              currentSholawat.latin,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 16,
@@ -154,7 +144,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              widget.sholawat.translation,
+                              currentSholawat.translation,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 14,
@@ -215,13 +205,17 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                         IconButton(
                           iconSize: 32,
                           icon: const Icon(Icons.repeat),
-                          onPressed: () {}, // TODO
+                          onPressed: () {
+                            // TODO: Add loop mode toggle
+                          },
                         ),
                         const SizedBox(width: 10),
                         IconButton(
                           iconSize: 40,
                           icon: const Icon(Icons.skip_previous),
-                          onPressed: () {}, // TODO
+                          onPressed: () {
+                            ref.read(audioPlayerServiceProvider).previous();
+                          },
                         ),
                         const SizedBox(width: 10),
                         GestureDetector(
@@ -249,13 +243,17 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                         IconButton(
                           iconSize: 40,
                           icon: const Icon(Icons.skip_next),
-                          onPressed: () {}, // TODO
+                          onPressed: () {
+                            ref.read(audioPlayerServiceProvider).next();
+                          },
                         ),
                         const SizedBox(width: 10),
                         IconButton(
                           iconSize: 32,
                           icon: const Icon(Icons.shuffle),
-                          onPressed: () {}, // TODO
+                          onPressed: () {
+                            // TODO: Add shuffle mode toggle
+                          },
                         ),
                       ],
                     ),

@@ -4,7 +4,26 @@ import '../services/audio_player_service.dart';
 
 final audioPlayerServiceProvider = Provider((ref) => AudioPlayerService());
 
-final currentSholawatProvider = StateProvider<Sholawat?>((ref) => null);
+final currentIndexProvider = StreamProvider<int?>((ref) {
+  final service = ref.watch(audioPlayerServiceProvider);
+  return service.currentIndexStream;
+});
+
+final currentSholawatProvider = StateProvider<Sholawat?>((ref) {
+  final indexAsync = ref.watch(currentIndexProvider);
+  final service = ref.watch(audioPlayerServiceProvider);
+  
+  return indexAsync.when(
+    data: (index) {
+      if (index != null && index < service.currentPlaylist.length) {
+        return service.currentPlaylist[index];
+      }
+      return null;
+    },
+    loading: () => null,
+    error: (_, __) => null,
+  );
+});
 
 final isPlayingProvider = StreamProvider<bool>((ref) {
   final service = ref.watch(audioPlayerServiceProvider);

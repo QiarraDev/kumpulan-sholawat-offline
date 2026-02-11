@@ -16,5 +16,23 @@
     "translation": "Ya Allah, limpahkanlah shalawat yang sempurna dan kesejahteraan yang merata.",
     "audio": "assets/audio/sholawat_nariyah.mp3",
     "category": "populer"
+  },
+  {
+    "id": 3,
+    "title": "Thola'al Badru",
+    "arabic": "طَلَعَ الْبَدْرُ عَلَيْنَا مِنْ ثَنِيَّاتِ الْوَدَاعِ",
+    "latin": "Thola'al badru 'alaina min tsaniyyatil wada'",
+    "translation": "Telah muncul bulan purnama di hadapan kami, dari arah lembah Wada.",
+    "audio": "assets/audio/tholaal_badru.mp3",
+    "category": "klasik"
+  },
+  {
+    "id": 4,
+    "title": "Ya Asyiqol Musthofa",
+    "arabic": "يَا عَاشِقَ الْمُصْطَفَى أَبْشِرْ بِنَيْلِ الْمُنَى",
+    "latin": "Ya asyiqol musthofa absyir binailil muna",
+    "translation": "Wahai pecinta Nabi yang terpilih, berbahagialah dengan terkabulnya cita-cita.",
+    "audio": "assets/audio/ya_asyiqol.mp3",
+    "category": "populer"
   }
 ]

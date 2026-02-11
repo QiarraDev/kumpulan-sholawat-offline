@@ -124,6 +124,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           },
                         ),
                         onTap: () {
+                          ref.read(audioPlayerServiceProvider).setPlaylist(filteredList, index);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

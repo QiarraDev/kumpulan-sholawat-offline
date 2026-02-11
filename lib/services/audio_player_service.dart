@@ -4,25 +4,33 @@ import '../models/sholawat.dart';
 
 class AudioPlayerService {
   final AudioPlayer _player = AudioPlayer();
+  List<Sholawat> _currentPlaylist = [];
 
   AudioPlayer get player => _player;
+  List<Sholawat> get currentPlaylist => _currentPlaylist;
 
-  Future<void> playSholawat(Sholawat sholawat) async {
+  Future<void> setPlaylist(List<Sholawat> list, int initialIndex) async {
+    _currentPlaylist = list;
     try {
-      await _player.setAudioSource(
-        AudioSource.uri(
-          Uri.parse('asset:///${sholawat.audio}'),
-          tag: MediaItem(
-            id: sholawat.id.toString(),
-            album: "Kumpulan Sholawat",
-            title: sholawat.title,
-            artUri: Uri.parse("https://example.com/logo.png"), // Placeholder
-          ),
-        ),
+      final playlist = ConcatenatingAudioSource(
+        children: list.map((sholawat) {
+          return AudioSource.uri(
+            Uri.parse('asset:///${sholawat.audio}'),
+            tag: MediaItem(
+              id: sholawat.id.toString(),
+              album: "Kumpulan Sholawat",
+              title: sholawat.title,
+              artist: sholawat.category,
+              artUri: Uri.parse("https://ui-avatars.com/api/?name=${sholawat.title}&background=random"),
+            ),
+          );
+        }).toList(),
       );
+
+      await _player.setAudioSource(playlist, initialIndex: initialIndex);
       _player.play();
     } catch (e) {
-      print("Error loading audio: $e");
+      print("Error loading playlist: $e");
     }
   }
 
@@ -30,7 +38,10 @@ class AudioPlayerService {
   void resume() => _player.play();
   void stop() => _player.stop();
   void seek(Duration position) => _player.seek(position);
+  void next() => _player.seekToNext();
+  void previous() => _player.seekToPrevious();
 
+  Stream<int?> get currentIndexStream => _player.currentIndexStream;
   Stream<Duration> get positionStream => _player.positionStream;
   Stream<Duration?> get durationStream => _player.durationStream;
   Stream<PlayerState> get playerStateStream => _player.playerStateStream;
