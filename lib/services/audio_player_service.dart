@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
@@ -6,9 +7,34 @@ import '../models/sholawat.dart';
 class AudioPlayerService {
   final AudioPlayer _player = AudioPlayer();
   List<Sholawat> _currentPlaylist = [];
+  Timer? _sleepTimer;
+  final _sleepTimerController = StreamController<Duration?>.broadcast();
 
   AudioPlayer get player => _player;
   List<Sholawat> get currentPlaylist => _currentPlaylist;
+  Stream<Duration?> get sleepTimerStream => _sleepTimerController.stream;
+
+  void setSleepTimer(Duration? duration) {
+    _sleepTimer?.cancel();
+    if (duration == null) {
+      _sleepTimerController.add(null);
+      return;
+    }
+
+    var remaining = duration;
+    _sleepTimerController.add(remaining);
+    
+    _sleepTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      remaining = remaining - const Duration(seconds: 1);
+      if (remaining.inSeconds <= 0) {
+        stop();
+        _sleepTimer?.cancel();
+        _sleepTimerController.add(null);
+      } else {
+        _sleepTimerController.add(remaining);
+      }
+    });
+  }
 
   Future<void> setPlaylist(List<Sholawat> list, int initialIndex) async {
     _currentPlaylist = list;

@@ -330,12 +330,109 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                             // TODO: Add shuffle mode toggle
                           },
                         ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          iconSize: 32,
+                          icon: const Icon(Icons.timer_outlined),
+                          onPressed: () => _showSleepTimerSheet(context, ref),
+                        ),
                       ],
+                    ),
+                    const SizedBox(height: 10),
+                    // TIMER STATUS
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final sleepTimer = ref.watch(sleepTimerProvider).value;
+                        if (sleepTimer == null) return const SizedBox.shrink();
+                        return Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'Berhenti dalam: ${_formatDuration(sleepTimer)}',
+                            style: GoogleFonts.outfit(
+                              color: Colors.green.shade800,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showSleepTimerSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Timer Tidur',
+                style: GoogleFonts.outfit(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green.shade900,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Audio akan berhenti otomatis setelah:',
+                style: GoogleFonts.outfit(color: Colors.grey),
+              ),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  _timerOption(context, ref, 'OFF', null),
+                  _timerOption(context, ref, '15 Menit', const Duration(minutes: 15)),
+                  _timerOption(context, ref, '30 Menit', const Duration(minutes: 30)),
+                  _timerOption(context, ref, '60 Menit', const Duration(minutes: 60)),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _timerOption(BuildContext context, WidgetRef ref, String label, Duration? duration) {
+    return InkWell(
+      onTap: () {
+        ref.read(audioPlayerServiceProvider).setSleepTimer(duration);
+        Navigator.pop(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.green.shade50,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.green.shade100),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.outfit(
+            color: Colors.green.shade800,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

@@ -39,3 +39,8 @@ final durationProvider = StreamProvider<Duration?>((ref) {
   final service = ref.watch(audioPlayerServiceProvider);
   return service.durationStream;
 });
+
+final sleepTimerProvider = StreamProvider<Duration?>((ref) {
+  final service = ref.watch(audioPlayerServiceProvider);
+  return service.sleepTimerStream;
+});

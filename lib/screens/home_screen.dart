@@ -8,6 +8,7 @@ import 'detail_screen.dart';
 import 'settings_screen.dart';
 import 'fadhilah_screen.dart';
 import 'doa_sebelum_screen.dart';
+import 'tasbih_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +21,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String _searchQuery = '';
   bool _showOnlyFavorites = false;
   String _selectedCategory = 'Semua';
+  List<String>? _filterByHajatTitles;
 
   final List<String> _categories = ['Semua', 'Populer', 'Klasik'];
 
@@ -38,7 +40,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 final matchesFavorite = !_showOnlyFavorites || favorites.contains(s.id);
                 final matchesCategory = _selectedCategory == 'Semua' || 
                                        s.category.toLowerCase() == _selectedCategory.toLowerCase();
-                return matchesSearch && matchesFavorite && matchesCategory;
+                final matchesHajat = _filterByHajatTitles == null || 
+                                     _filterByHajatTitles!.contains(s.title);
+                return matchesSearch && matchesFavorite && matchesCategory && matchesHajat;
               }).toList();
 
               return CustomScrollView(
@@ -89,15 +93,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         },
                       ),
                       _buildAppBarIcon(
-                        icon: Icons.info_outline,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const FadhilahScreen()),
-                          );
-                        },
-                      ),
-                      _buildAppBarIcon(
                         icon: Icons.settings,
                         onPressed: () {
                           Navigator.push(
@@ -115,6 +110,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          _buildDailyQuote(),
+                          const SizedBox(height: 20),
                           TextField(
                             onChanged: (value) => setState(() => _searchQuery = value),
                             decoration: InputDecoration(
@@ -140,7 +137,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     selected: isSelected,
                                     label: Text(cat),
                                     onSelected: (val) {
-                                      setState(() => _selectedCategory = cat);
+                                      setState(() {
+                                        _selectedCategory = cat;
+                                        _filterByHajatTitles = null;
+                                      });
                                     },
                                     selectedColor: Colors.green.shade700,
                                     checkmarkColor: Colors.white,
@@ -159,35 +159,153 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                      child: Row(
+                      child: Column(
                         children: [
-                          Expanded(
-                            child: _buildInfoCard(
-                              title: 'Doa & Adab',
-                              subtitle: 'Niat bersholawat',
-                              icon: Icons.auto_stories,
-                              colors: [Colors.green.shade800, Colors.green.shade600],
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const DoaSebelumScreen()),
-                                );
-                              },
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const TasbihScreen()),
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.green.shade900, Colors.green.shade700],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(25),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.green.withOpacity(0.3),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: const Icon(Icons.auto_awesome, color: Colors.white, size: 30),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Tasbih Digital',
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Hitung dzikir & sholawat Anda',
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.white.withOpacity(0.7),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildInfoCard(
-                              title: 'Keutamaan',
-                              subtitle: 'Fadhilah sholawat',
-                              icon: Icons.star_rounded,
-                              colors: [Colors.amber.shade800, Colors.amber.shade600],
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const FadhilahScreen()),
-                                );
-                              },
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildInfoCard(
+                                  title: 'Doa & Adab',
+                                  subtitle: 'Niat sholawat',
+                                  icon: Icons.auto_stories,
+                                  colors: [Colors.green.shade800, Colors.green.shade600],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const DoaSebelumScreen()),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildInfoCard(
+                                  title: 'Keutamaan',
+                                  subtitle: 'Fadhilah',
+                                  icon: Icons.star_rounded,
+                                  colors: [Colors.green.shade800, Colors.green.shade600],
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const FadhilahScreen()),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Berdasarkan Hajat',
+                            style: GoogleFonts.outfit(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                _buildCollectionCard(
+                                  title: 'Penenang Hati',
+                                  icon: Icons.spa_rounded,
+                                  color: Colors.teal.shade600,
+                                  onTap: () => _filterByHajat(['Sholawat Tibbil Qulub', 'Sholawat Nariyah', 'Roqqota Aina (Assalamu Alayka)']),
+                                ),
+                                _buildCollectionCard(
+                                  title: 'Pelancar Rezeki',
+                                  icon: Icons.account_balance_wallet_rounded,
+                                  color: Colors.blue.shade600,
+                                  onTap: () => _filterByHajat(['Sholawat Jibril']),
+                                ),
+                                _buildCollectionCard(
+                                  title: 'Keselamatan',
+                                  icon: Icons.shield_rounded,
+                                  color: Colors.red.shade600,
+                                  onTap: () => _filterByHajat(['Sholawat Munjiyat']),
+                                ),
+                                _buildCollectionCard(
+                                  title: 'Hajat Mendesak',
+                                  icon: Icons.bolt_rounded,
+                                  color: Colors.purple.shade600,
+                                  onTap: () => _filterByHajat(['Sholawat Badar', 'Sholawat Ibrahimiyah']),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -334,6 +452,113 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: IconButton(
         icon: Icon(icon, color: color ?? Colors.white, size: 20),
         onPressed: onPressed,
+      ),
+    );
+  }
+
+  Widget _buildCollectionCard({required String title, required IconData icon, required Color color, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(right: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withOpacity(0.2)),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: GoogleFonts.outfit(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _filterByHajat(List<String> titles) {
+    setState(() {
+      _selectedCategory = 'Semua';
+      _searchQuery = '';
+      _filterByHajatTitles = titles;
+    });
+    
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Koleksi sholawat sudah difilter.'),
+        backgroundColor: Colors.green.shade800,
+        action: SnackBarAction(
+          label: 'RESET', 
+          textColor: Colors.white,
+          onPressed: () {
+            setState(() {
+              _filterByHajatTitles = null;
+            });
+          }
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDailyQuote() {
+    final quotes = [
+      "Barangsiapa bersholawat kepadaku satu kali, niscaya Allah bersholawat kepadanya sepuluh kali. (HR. Muslim)",
+      "Orang yang paling pelit adalah orang yang ketika namaku disebut di sisinya, ia tidak bersholawat kepadaku. (HR. Tirmidzi)",
+      "Hiasilah majelis-majelis kalian dengan bersholawat kepadaku. (HR. Ad-Dailami)",
+      "Perbanyaklah sholawat kepadaku pada hari Jumat. (HR. Al-Baihaqi)",
+      "Doa itu terhalang hingga dibacakan sholawat untuk Nabi SAW. (HR. Thabrani)",
+    ];
+    // Pick quote based on date to keep it consistent for the day
+    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
+    final quote = quotes[dayOfYear % quotes.length];
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.green.shade50.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.green.shade100),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.format_quote_rounded, color: Colors.green.shade700, size: 28),
+              const SizedBox(width: 8),
+              Text(
+                'Quote Hari Ini',
+                style: GoogleFonts.outfit(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green.shade800,
+                  letterSpacing: 1.1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            quote,
+            style: GoogleFonts.outfit(
+              fontSize: 15,
+              fontStyle: FontStyle.italic,
+              color: Colors.green.shade900,
+              height: 1.5,
+            ),
+          ),
+        ],
       ),
     );
   }
