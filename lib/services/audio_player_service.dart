@@ -41,10 +41,8 @@ class AudioPlayerService {
     try {
       final playlist = ConcatenatingAudioSource(
         children: list.map((sholawat) {
-          // Menggunakan audio sampel yang sangat stabil untuk testing (ID 1 - Sholawat Badar)
-          final audioUri = sholawat.id == 1 
-              ? Uri.parse('https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3')
-              : Uri.parse('asset:///${sholawat.audio}');
+          // Menggunakan audio sampel online yang stabil untuk testing semua item
+          final audioUri = Uri.parse('https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3');
 
           return AudioSource.uri(
             audioUri,

@@ -276,24 +276,16 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                     ),
                     const SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          iconSize: 32,
-                          icon: const Icon(Icons.repeat),
-                          onPressed: () {
-                            // TODO: Add loop mode toggle
-                          },
+                          icon: const Icon(Icons.repeat, size: 28),
+                          onPressed: () {},
                         ),
-                        const SizedBox(width: 10),
                         IconButton(
-                          iconSize: 40,
-                          icon: const Icon(Icons.skip_previous),
-                          onPressed: () {
-                            ref.read(audioPlayerServiceProvider).previous();
-                          },
+                          icon: const Icon(Icons.skip_previous, size: 36),
+                          onPressed: () => ref.read(audioPlayerServiceProvider).previous(),
                         ),
-                        const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () {
                             if (isPlaying) {
@@ -303,45 +295,49 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                             }
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
                               color: Colors.green.shade700,
                               shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.3),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
                             ),
                             child: Icon(
                               isPlaying ? Icons.pause : Icons.play_arrow,
-                              size: 40,
+                              size: 42,
                               color: Colors.white,
                             ),
                           ),
                         ),
-                        const SizedBox(width: 10),
                         IconButton(
-                          iconSize: 40,
-                          icon: const Icon(Icons.skip_next),
-                          onPressed: () {
-                            ref.read(audioPlayerServiceProvider).next();
-                          },
+                          icon: const Icon(Icons.skip_next, size: 36),
+                          onPressed: () => ref.read(audioPlayerServiceProvider).next(),
                         ),
-                        const SizedBox(width: 10),
                         IconButton(
-                          iconSize: 32,
-                          icon: const Icon(Icons.shuffle),
-                          onPressed: () {
-                            // TODO: Add shuffle mode toggle
-                          },
+                          icon: const Icon(Icons.shuffle, size: 28),
+                          onPressed: () {},
                         ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          iconSize: 32,
-                          icon: const Icon(Icons.timer_outlined),
-                          onPressed: () => _showSleepTimerSheet(context, ref),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildSmallActionButton(
+                          icon: Icons.bedtime_outlined,
+                          label: 'Timer',
+                          onTap: () => _showSleepTimerSheet(context, ref),
                         ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          iconSize: 32,
-                          icon: const Icon(Icons.download_for_offline_rounded),
-                          onPressed: () async {
+                        const SizedBox(width: 40),
+                        _buildSmallActionButton(
+                          icon: Icons.file_download_outlined,
+                          label: 'Simpan',
+                          onTap: () async {
                             final result = await DownloadService.downloadAudio(
                               currentSholawat.audio,
                               "${currentSholawat.title.replaceAll(' ', '_')}.mp3",
@@ -466,5 +462,33 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
     String twoDigitsMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitsSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "$twoDigitsMinutes:$twoDigitsSeconds";
+  }
+
+  Widget _buildSmallActionButton({required IconData icon, required String label, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(15),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.green.shade800, size: 24),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: GoogleFonts.outfit(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: Colors.green.shade900,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
