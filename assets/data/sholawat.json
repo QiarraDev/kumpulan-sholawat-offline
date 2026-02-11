@@ -34,5 +34,77 @@
     "translation": "Wahai pecinta Nabi yang terpilih, berbahagialah dengan terkabulnya cita-cita.",
     "audio": "assets/audio/ya_asyiqol.mp3",
     "category": "populer"
+  },
+  {
+    "id": 5,
+    "title": "Sholawat Tibbil Qulub",
+    "arabic": "أَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ طِبِّ الْقُلُوْبِ وَدَوَائِهَا",
+    "latin": "Allohumma sholli 'ala sayyidina Muhammadin thibbil qulubi wa dawaiha",
+    "translation": "Ya Allah, limpahkanlah rahmat kepada junjungan kami Nabi Muhammad, sebagai penyembuh hati dan obatnya.",
+    "audio": "assets/audio/tibbil_qulub.mp3",
+    "category": "populer"
+  },
+  {
+    "id": 6,
+    "title": "Sholawat Munjiyat",
+    "arabic": "أَللّٰهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ صَلَاةً تُنْجِيْنَا بِهَا مِنْ جَمِيْعِ الْأَهْوَالِ وَالْآفَاتِ",
+    "latin": "Allohumma sholli 'ala sayyidina Muhammadin sholatan tunjina biha min jami'il ahwali wal afat",
+    "translation": "Ya Allah, limpahkanlah rahmat kepada junjungan kami Nabi Muhammad, yang dengan rahmat itu Engkau menyelamatkan kami dari segala ketakutan dan penyakit.",
+    "audio": "assets/audio/munjiyat.mp3",
+    "category": "populer"
+  },
+  {
+    "id": 7,
+    "title": "Sholawat Ibrahimiyah",
+    "arabic": "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ",
+    "latin": "Allohumma sholli 'ala Muhammad wa 'ala ali Muhammad kama shollaita 'ala Ibrahim",
+    "translation": "Ya Allah, limpahkanlah rahmat kepada Muhammad dan keluarga Muhammad sebagaimana Engkau melimpahkan rahmat kepada Ibrahim.",
+    "audio": "assets/audio/ibrahimiyah.mp3",
+    "category": "klasik"
+  },
+  {
+    "id": 8,
+    "title": "Sholawat Jibril",
+    "arabic": "صَلَّى اللهُ عَلَى مُحَمَّد",
+    "latin": "Shollallohu 'ala Muhammad",
+    "translation": "Semoga Allah melimpahkan rahmat kepada Nabi Muhammad.",
+    "audio": "assets/audio/jibril.mp3",
+    "category": "populer"
+  },
+  {
+    "id": 9,
+    "title": "Roqqota Aina (Assalamu Alayka)",
+    "arabic": "رَقَّتْ عَيْنَايَ شَوْقاً وَلِطَيْبَةَ ذَرَفَتْ عِشْقاً",
+    "latin": "Roqqota aina ya syauqon, wa litoibata dhorofat 'isyqon",
+    "translation": "Kedua mataku penuh dengan kerinduan, dan meneteskan air mata karena cinta pada Thoybah (Madinah).",
+    "audio": "assets/audio/assalamu_alayka.mp3",
+    "category": "populer"
+  },
+  {
+    "id": 10,
+    "title": "Bil Qur'ani Sa'amdhi",
+    "arabic": "بِالقُرْآنِ سَأَمْضِي أَجْلُو خَبْأَ شُجُونِي",
+    "latin": "Bil qur'ani sa'amdhi ajlu khob'a syujuni",
+    "translation": "Dengan Al-Qur'an aku akan melangkah, menghapus kesedihan yang tersembunyi.",
+    "audio": "assets/audio/bil_qurani.mp3",
+    "category": "populer"
+  },
+  {
+    "id": 11,
+    "title": "Adfaita",
+    "arabic": "أَضْفَيْتَ عَلَى الْحُسْنِ الْعَبَقَا",
+    "latin": "Adfaita 'alal husnil abaqo",
+    "translation": "Engkau telah memberikan keharuman pada keindahan.",
+    "audio": "assets/audio/adfaita.mp3",
+    "category": "populer"
+  },
+  {
+    "id": 12,
+    "title": "Man Ana",
+    "arabic": "مَنْ أَنَا مَنْ أَنَا لَوْلَاكُم مَنْ أَنَا",
+    "latin": "Man ana man ana laulakum man ana",
+    "translation": "Siapakah diriku, siapakah diriku, jika tanpa kalian (guru), siapakah diriku.",
+    "audio": "assets/audio/man_ana.mp3",
+    "category": "populer"
   }
 ]

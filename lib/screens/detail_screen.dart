@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/sholawat.dart';
 import '../providers/audio_provider.dart';
 import '../providers/sholawat_provider.dart';
 
 class DetailScreen extends ConsumerStatefulWidget {
   final Sholawat sholawat;
+
   const DetailScreen({super.key, required this.sholawat});
 
   @override
@@ -28,10 +30,10 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.green.shade800,
+              Colors.green.shade900,
               Theme.of(context).scaffoldBackgroundColor,
             ],
-            stops: const [0.0, 0.4],
+            stops: const [0.0, 0.5],
           ),
         ),
         child: SafeArea(
@@ -43,16 +45,29 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 32),
                       onPressed: () => Navigator.pop(context),
                     ),
-                    const Text(
-                      'Sedang Diputar',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                    Column(
+                      children: [
+                        Text(
+                          'SEDANG DIPUTAR',
+                          style: GoogleFonts.outfit(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 10,
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          currentSholawat.category,
+                          style: GoogleFonts.outfit(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
                     IconButton(
                       icon: Icon(
@@ -73,53 +88,44 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                   child: Column(
                     children: [
+                      const SizedBox(height: 20),
                       Container(
-                        width: 200,
-                        height: 200,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        height: MediaQuery.of(context).size.width * 0.7,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(30),
+                          image: DecorationImage(
+                            image: NetworkImage("https://ui-avatars.com/api/?name=${currentSholawat.title}&size=512&background=2E7D32&color=fff"),
+                            fit: BoxFit.cover,
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 20,
-                              spreadRadius: 5,
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 30,
+                              offset: const Offset(0, 10),
                             )
                           ],
                         ),
-                        child: const Icon(Icons.music_note, size: 100, color: Colors.white),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 40),
                       Text(
                         currentSholawat.title,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 26,
+                        style: GoogleFonts.outfit(
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        currentSholawat.category,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.green.shade700,
-                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 48),
                       // ARABIC TEXT
                       Container(
-                        padding: const EdgeInsets.all(20),
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                            )
-                          ],
+                          color: Theme.of(context).cardColor.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: Colors.white.withOpacity(0.1)),
                         ),
                         child: Column(
                           children: [
@@ -127,33 +133,39 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                               currentSholawat.arabic,
                               textAlign: TextAlign.center,
                               textDirection: TextDirection.rtl,
-                              style: const TextStyle(
+                              style: GoogleFonts.amiri(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
-                                height: 1.5,
+                                height: 1.8,
+                                color: Colors.green.shade800,
                               ),
                             ),
-                            const Divider(height: 32),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24),
+                              child: Divider(),
+                            ),
                             Text(
                               currentSholawat.latin,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 16,
+                              style: GoogleFonts.outfit(
+                                fontSize: 18,
                                 fontStyle: FontStyle.italic,
+                                color: Colors.grey.shade700,
                               ),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               currentSholawat.translation,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: GoogleFonts.outfit(
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: Colors.grey.shade500,
                               ),
                             ),
                           ],
                         ),
                       ),
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),

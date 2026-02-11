@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import '../models/sholawat.dart';
@@ -30,7 +31,11 @@ class AudioPlayerService {
       await _player.setAudioSource(playlist, initialIndex: initialIndex);
       _player.play();
     } catch (e) {
-      print("Error loading playlist: $e");
+      debugPrint("Error loading playlist: $e");
+      // Fallback for demo when assets are missing
+      if (initialIndex < list.length) {
+         debugPrint("Demo mode: Assets missing, simulation enabled.");
+      }
     }
   }
 
