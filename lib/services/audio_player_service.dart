@@ -15,10 +15,9 @@ class AudioPlayerService {
     try {
       final playlist = ConcatenatingAudioSource(
         children: list.map((sholawat) {
-          // Demo fallback: If it's the first item and we're in demo mode, use a remote URL
-          // so the user can see the player working.
+          // Menggunakan audio sampel yang sangat stabil untuk testing (ID 1 - Sholawat Badar)
           final audioUri = sholawat.id == 1 
-              ? Uri.parse('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3')
+              ? Uri.parse('https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3')
               : Uri.parse('asset:///${sholawat.audio}');
 
           return AudioSource.uri(
@@ -28,7 +27,7 @@ class AudioPlayerService {
               album: "Kumpulan Sholawat",
               title: sholawat.title,
               artist: sholawat.category,
-              artUri: Uri.parse("https://ui-avatars.com/api/?name=${sholawat.title}&background=random"),
+              artUri: Uri.parse("https://ui-avatars.com/api/?name=${sholawat.title}&background=2E7D32&color=fff"),
             ),
           );
         }).toList(),

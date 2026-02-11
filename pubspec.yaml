@@ -53,6 +53,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/data/
+    - assets/data/sholawat.json
     - assets/audio/
-    - assets/images/
+    - assets/images/banner_calligraphy.png
+    - assets/images/sholawat_cover.png

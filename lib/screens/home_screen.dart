@@ -43,34 +43,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
-                    expandedHeight: 180.0,
+                    expandedHeight: 200.0,
                     floating: false,
                     pinned: true,
                     flexibleSpace: FlexibleSpaceBar(
-                      title: Text(
-                        'Sholawat Offline',
-                        style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
-                      ),
-                      background: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Colors.green.shade900, Colors.green.shade400],
+                      background: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.asset(
+                            'assets/images/banner_calligraphy.png',
+                            fit: BoxFit.cover,
                           ),
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              right: -20,
-                              top: -20,
-                              child: Icon(Icons.music_note, 
-                                size: 150, 
-                                color: Colors.white.withOpacity(0.1)
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.5),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     actions: [
