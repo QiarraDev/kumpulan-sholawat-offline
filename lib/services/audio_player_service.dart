@@ -15,8 +15,14 @@ class AudioPlayerService {
     try {
       final playlist = ConcatenatingAudioSource(
         children: list.map((sholawat) {
+          // Demo fallback: If it's the first item and we're in demo mode, use a remote URL
+          // so the user can see the player working.
+          final audioUri = sholawat.id == 1 
+              ? Uri.parse('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3')
+              : Uri.parse('asset:///${sholawat.audio}');
+
           return AudioSource.uri(
-            Uri.parse('asset:///${sholawat.audio}'),
+            audioUri,
             tag: MediaItem(
               id: sholawat.id.toString(),
               album: "Kumpulan Sholawat",

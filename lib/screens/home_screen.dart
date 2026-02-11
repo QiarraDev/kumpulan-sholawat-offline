@@ -6,6 +6,7 @@ import '../providers/audio_provider.dart';
 import '../models/sholawat.dart';
 import 'detail_screen.dart';
 import 'settings_screen.dart';
+import 'fadhilah_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -79,6 +80,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           setState(() {
                             _showOnlyFavorites = !_showOnlyFavorites;
                           });
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.info_outline),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const FadhilahScreen()),
+                          );
                         },
                       ),
                       IconButton(
@@ -161,19 +171,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             child: ListTile(
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                               leading: Container(
-                                width: 50,
-                                height: 50,
+                                width: 55,
+                                height: 55,
                                 decoration: BoxDecoration(
-                                  color: Colors.green.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
+                                  image: const DecorationImage(
+                                    image: AssetImage('assets/images/sholawat_cover.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    )
+                                  ],
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    sholawat.title[0],
-                                    style: GoogleFonts.outfit(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green.shade700,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.black.withOpacity(0.2),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      sholawat.arabic.split(' ').first,
+                                      style: GoogleFonts.amiri(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                 ),
