@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Sholawat Badar",
+    "arabic": "صَلَاةُ اللهِ سَلَامُ اللهِ عَلَى طَهَ رَسُوْلِ اللهِ",
+    "latin": "Sholatullah salamullah 'ala Thoha Rosulillah",
+    "translation": "Rahmat dan keselamatan Allah semoga tetap tercurah kepada Thoha utusan Allah.",
+    "audio": "assets/audio/sholawat_badar.mp3",
+    "category": "populer"
+  },
+  {
+    "id": 2,
+    "title": "Sholawat Nariyah",
+    "arabic": "اَللّٰهُمَّ صَلِّ صَلَاةً كَامِلَةً وَسَلِّمْ سَلَامًا تَامًّا",
+    "latin": "Allohumma sholli sholatan kamilatan wa sallim salaman tamman",
+    "translation": "Ya Allah, limpahkanlah shalawat yang sempurna dan kesejahteraan yang merata.",
+    "audio": "assets/audio/sholawat_nariyah.mp3",
+    "category": "populer"
+  }
+]
