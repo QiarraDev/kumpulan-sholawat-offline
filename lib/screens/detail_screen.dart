@@ -32,103 +32,238 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
     final duration = ref.watch(durationProvider).value ?? Duration.zero;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.sholawat.title),
-        actions: [
-          IconButton(
-            icon: Icon(
-              ref.watch(favoritesProvider).contains(widget.sholawat.id)
-                  ? Icons.favorite
-                  : Icons.favorite_border,
-              color: Colors.red,
-            ),
-            onPressed: () {
-              ref.read(favoritesProvider.notifier).toggleFavorite(widget.sholawat.id);
-            },
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.green.shade800,
+              Theme.of(context).scaffoldBackgroundColor,
+            ],
+            stops: const [0.0, 0.4],
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              widget.sholawat.arabic,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Regular', // TODO: Add Arabic font
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Text(
+                      'Sedang Diputar',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        ref.watch(favoritesProvider).contains(widget.sholawat.id)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        ref.read(favoritesProvider.notifier).toggleFavorite(widget.sholawat.id);
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              widget.sholawat.latin,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                fontStyle: FontStyle.italic,
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 20,
+                              spreadRadius: 5,
+                            )
+                          ],
+                        ),
+                        child: const Icon(Icons.music_note, size: 100, color: Colors.white),
+                      ),
+                      const SizedBox(height: 32),
+                      Text(
+                        widget.sholawat.title,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.sholawat.category,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.green.shade700,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 48),
+                      // ARABIC TEXT
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                            )
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.sholawat.arabic,
+                              textAlign: TextAlign.center,
+                              textDirection: TextDirection.rtl,
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                height: 1.5,
+                              ),
+                            ),
+                            const Divider(height: 32),
+                            Text(
+                              widget.sholawat.latin,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              widget.sholawat.translation,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              widget.sholawat.translation,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 40),
-            Slider(
-              value: position.inMilliseconds.toDouble(),
-              max: duration.inMilliseconds.toDouble() > 0
-                  ? duration.inMilliseconds.toDouble()
-                  : 1,
-              onChanged: (value) {
-                ref.read(audioPlayerServiceProvider).seek(
-                      Duration(milliseconds: value.toInt()),
-                    );
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(_formatDuration(position)),
-                Text(_formatDuration(duration)),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  iconSize: 48,
-                  icon: const Icon(Icons.skip_previous),
-                  onPressed: () {
-                    // TODO: Previous logic
-                  },
+              // PLAYER CONTROLS
+              Container(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
                 ),
-                IconButton(
-                  iconSize: 64,
-                  icon: Icon(isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled),
-                  onPressed: () {
-                    if (isPlaying) {
-                      ref.read(audioPlayerServiceProvider).pause();
-                    } else {
-                      ref.read(audioPlayerServiceProvider).resume();
-                    }
-                  },
+                child: Column(
+                  children: [
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        trackHeight: 4,
+                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                        overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                        activeTrackColor: Colors.green.shade700,
+                        inactiveTrackColor: Colors.green.shade100,
+                        thumbColor: Colors.green.shade700,
+                      ),
+                      child: Slider(
+                        value: position.inMilliseconds.toDouble(),
+                        max: duration.inMilliseconds.toDouble() > 0
+                            ? duration.inMilliseconds.toDouble()
+                            : 1,
+                        onChanged: (value) {
+                          ref.read(audioPlayerServiceProvider).seek(
+                                Duration(milliseconds: value.toInt()),
+                              );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(_formatDuration(position), style: const TextStyle(fontSize: 12)),
+                          Text(_formatDuration(duration), style: const TextStyle(fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          iconSize: 32,
+                          icon: const Icon(Icons.repeat),
+                          onPressed: () {}, // TODO
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          iconSize: 40,
+                          icon: const Icon(Icons.skip_previous),
+                          onPressed: () {}, // TODO
+                        ),
+                        const SizedBox(width: 10),
+                        GestureDetector(
+                          onTap: () {
+                            if (isPlaying) {
+                              ref.read(audioPlayerServiceProvider).pause();
+                            } else {
+                              ref.read(audioPlayerServiceProvider).resume();
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade700,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isPlaying ? Icons.pause : Icons.play_arrow,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          iconSize: 40,
+                          icon: const Icon(Icons.skip_next),
+                          onPressed: () {}, // TODO
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          iconSize: 32,
+                          icon: const Icon(Icons.shuffle),
+                          onPressed: () {}, // TODO
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                IconButton(
-                  iconSize: 48,
-                  icon: const Icon(Icons.skip_next),
-                  onPressed: () {
-                    // TODO: Next logic
-                  },
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
