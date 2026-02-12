@@ -10,13 +10,18 @@ class FadhilahScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 220.0,
+            expandedHeight: 250.0,
             pinned: true,
             backgroundColor: Colors.green.shade900,
             flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
               title: Text(
                 'Keutamaan Sholawat',
-                style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+                style: GoogleFonts.outfit(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  color: Colors.white,
+                ),
               ),
               background: Container(
                 decoration: BoxDecoration(
@@ -26,11 +31,19 @@ class FadhilahScreen extends StatelessWidget {
                     colors: [Colors.green.shade800, Colors.green.shade900],
                   ),
                 ),
-                child: Center(
-                  child: Opacity(
-                    opacity: 0.15,
-                    child: Icon(Icons.star_outline, size: 120, color: Colors.white),
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.star_rounded, size: 60, color: Colors.white),
+                    ),
+                    const SizedBox(height: 60), // Memberikan ruang untuk title di bawah icon
+                  ],
                 ),
               ),
             ),

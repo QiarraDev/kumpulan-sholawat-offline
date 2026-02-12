@@ -10,11 +10,19 @@ class DoaSebelumScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 200.0,
+            expandedHeight: 250.0,
             pinned: true,
             backgroundColor: Colors.green.shade900,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text('Doa & Adab', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+              centerTitle: true,
+              title: Text(
+                'Doa & Adab',
+                style: GoogleFonts.outfit(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26,
+                  color: Colors.white,
+                ),
+              ),
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -23,8 +31,19 @@ class DoaSebelumScreen extends StatelessWidget {
                     colors: [Colors.green.shade800, Colors.green.shade900],
                   ),
                 ),
-                child: Center(
-                  child: Icon(Icons.menu_book, size: 80, color: Colors.white.withOpacity(0.2)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.menu_book_rounded, size: 60, color: Colors.white),
+                    ),
+                    const SizedBox(height: 60), // Memberikan ruang untuk title di bawah icon
+                  ],
                 ),
               ),
             ),
