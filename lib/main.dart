@@ -41,19 +41,28 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
-        primarySwatch: Colors.green,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
+          seedColor: const Color(0xFF2E7D32),
           brightness: Brightness.light,
+          primary: const Color(0xFF2E7D32),
+          secondary: const Color(0xFF004D40),
+        ),
+        appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 0,
         ),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
-        brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
+          seedColor: const Color(0xFF2E7D32),
           brightness: Brightness.dark,
+          surface: const Color(0xFF001A11),
+          background: const Color(0xFF001A11),
+          primary: const Color(0xFF43A047),
+          secondary: const Color(0xFF81C784),
         ),
+        scaffoldBackgroundColor: const Color(0xFF00120B),
       ),
       themeMode: themeMode,
       home: const HomeScreen(),
