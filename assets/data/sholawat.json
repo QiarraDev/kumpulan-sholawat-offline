@@ -15,7 +15,7 @@
     "latin": "Allohumma sholli sholatan kamilatan wa sallim salaman tamman 'ala sayyidina Muhammadinil ladzi tanhallu bihil 'uqodu wa tanfariju bihil kurobu wa tuqdho bihil hawa-iju wa tunalu bihir rogko-ibu wa husnul khowatimi wa yustasqol ghomamu biwajhihil karimi wa 'ala alihi wa shohbihi fi kulli lamhatin wa nafasin bi'adadi kulli ma'lumin laka",
     "translation": "Ya Allah, limpahkanlah shalawat yang sempurna dan kesejahteraan yang merata kepada junjungan kami Nabi Muhammad yang dengannya terurai segala kekusutan, dilepaskan segala kesusahan, ditunaikan segala hajat, tercapai segala keinginan dan akhir yang baik, serta dicurahkan rahmat lewat wajahnya yang mulia, juga kepada keluarga dan sahabatnya pada setiap kedipan mata dan hembusan nafas sebanyak bilangan yang Engkau ketahui.",
     "audio": "assets/audio/sholawat_nariyah.mp3",
-    "category": "populer"
+    "category": "hajat"
   },
   {
     "id": 3,
@@ -42,7 +42,7 @@
     "latin": "Allohumma sholli 'ala sayyidina Muhammadin thibbil qulubi wa dawaiha\nwa 'afiyatil abdani wa syifaiha\nwa nuuril abshori wa dhiyaiha\nwa 'ala alihi wa shohbihi wa sallim",
     "translation": "Ya Allah, limpahkanlah rahmat kepada junjungan kami Nabi Muhammad, sebagai penyembuh hati dan obatnya, penyehat badan dan kesembuhannya, cahaya mata dan sinarnya, dan curahkanlah rahmat kepada keluarga dan sahabatnya.",
     "audio": "assets/audio/tibbil_qulub.mp3",
-    "category": "populer"
+    "category": "hajat"
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@
     "latin": "Allohumma sholli 'ala sayyidiana Muhammadin sholatan tunjina biha min jami'il ahwali wal-afat\nwa taqdhi lana biha jami'al hajat\nwa tuthohiruna biha min jami'is sayyi-at\nwa tarfa'una biha 'indaka a'lad darojat\nwa tuballighuna biha aqshol ghoyat min jami'il khoiroti fil hayati wa ba'dal mamat",
     "translation": "Ya Allah, limpahkanlah rahmat kepada junjungan kami Nabi Muhammad, yang dengan rahmat itu Engkau menyelamatkan kami dari segala ketakutan dan rintangan, menunaikan segala hajat kami, membersihkan kami dari segala keburukan, mengangkat derajat kami di sisi-Mu, dan menyampaikan tujuan maksimal kami dari segala kebaikan di waktu hidup maupun sesudah mati.",
     "audio": "assets/audio/munjiyat.mp3",
-    "category": "populer"
+    "category": "hajat"
   },
   {
     "id": 7,
@@ -60,7 +60,7 @@
     "latin": "Allohumma sholli 'ala Muhammad wa 'ala ali Muhammad kama shollaita 'ala Ibrahim wa 'ala ali Ibrahim wa barik 'ala Muhammad wa 'ala ali Muhammad kama barakta 'ala Ibrahim wa 'ala ali Ibrahim fil 'alamina innaka hamidun majid",
     "translation": "Ya Allah, limpahkanlah rahmat kepada Muhammad dan keluarga Muhammad sebagaimana Engkau melimpahkan rahmat kepada Ibrahim dan keluarga Ibrahim. Berkatilah Muhammad dan keluarga Muhammad sebagaimana Engkau memberkati Ibrahim dan keluarga Ibrahim. Di seluruh alam semesta, sesungguhnya Engkau Maha Terpuji lagi Maha Mulia.",
     "audio": "assets/audio/ibrahimiyah.mp3",
-    "category": "klasik"
+    "category": "sholawat nabi"
   },
   {
     "id": 8,

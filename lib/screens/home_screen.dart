@@ -18,17 +18,31 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  String _searchQuery = '';
   bool _showOnlyFavorites = false;
   String _selectedCategory = 'Semua';
   List<String>? _filterByHajatTitles;
 
-  final List<String> _categories = ['Semua', 'Populer', 'Klasik'];
+  final List<String> _categories = ['Semua', 'Populer', 'Klasik', 'Sholawat Nabi', 'Hajat'];
   final ScrollController _hajatScrollController = ScrollController();
+  final ScrollController _categoryScrollController = ScrollController();
+
+  void _scrollCategories(bool forward) {
+    if (!_categoryScrollController.hasClients) return;
+    final double newOffset = forward 
+        ? _categoryScrollController.offset + 150 
+        : _categoryScrollController.offset - 150;
+        
+    _categoryScrollController.animateTo(
+      newOffset.clamp(0.0, _categoryScrollController.position.maxScrollExtent),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   void dispose() {
     _hajatScrollController.dispose();
+    _categoryScrollController.dispose();
     super.dispose();
   }
 
@@ -43,13 +57,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           sholawatAsync.when(
             data: (list) {
               final filteredList = list.where((s) {
-                final matchesSearch = s.title.toLowerCase().contains(_searchQuery.toLowerCase());
                 final matchesFavorite = !_showOnlyFavorites || favorites.contains(s.id);
                 final matchesCategory = _selectedCategory == 'Semua' || 
                                        s.category.toLowerCase() == _selectedCategory.toLowerCase();
                 final matchesHajat = _filterByHajatTitles == null || 
                                      _filterByHajatTitles!.contains(s.title);
-                return matchesSearch && matchesFavorite && matchesCategory && matchesHajat;
+                return matchesFavorite && matchesCategory && matchesHajat;
               }).toList();
 
               return CustomScrollView(
@@ -118,47 +131,54 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildDailyQuote(),
-                          const SizedBox(height: 20),
-                          TextField(
-                            onChanged: (value) => setState(() => _searchQuery = value),
-                            decoration: InputDecoration(
-                              hintText: 'Cari Sholawat...',
-                              prefixIcon: const Icon(Icons.search),
-                              filled: true,
-                              fillColor: Theme.of(context).cardColor,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: _categories.map((cat) {
-                                final isSelected = _selectedCategory == cat;
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: FilterChip(
-                                    selected: isSelected,
-                                    label: Text(cat),
-                                    onSelected: (val) {
-                                      setState(() {
-                                        _selectedCategory = cat;
-                                        _filterByHajatTitles = null;
-                                      });
-                                    },
-                                    selectedColor: Colors.green.shade700,
-                                    checkmarkColor: Colors.white,
-                                    labelStyle: TextStyle(
-                                      color: isSelected ? Colors.white : null,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
+                           const SizedBox(height: 20),
+                           Row(
+                             children: [
+                               IconButton(
+                                 visualDensity: VisualDensity.compact,
+                                 icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.green.shade700, size: 18),
+                                 onPressed: () => _scrollCategories(false),
+                               ),
+                               Expanded(
+                                 child: SingleChildScrollView(
+                                   controller: _categoryScrollController,
+                                   scrollDirection: Axis.horizontal,
+                                   physics: const BouncingScrollPhysics(),
+                                   child: Row(
+                                     children: _categories.map((cat) {
+                                       final isSelected = _selectedCategory == cat;
+                                       return Padding(
+                                         padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                         child: FilterChip(
+                                           selected: isSelected,
+                                           label: Text(cat),
+                                           onSelected: (val) {
+                                             setState(() {
+                                               _selectedCategory = cat;
+                                               _filterByHajatTitles = null;
+                                             });
+                                           },
+                                           selectedColor: Colors.green.shade700,
+                                           checkmarkColor: Colors.white,
+                                           backgroundColor: Colors.white,
+                                           side: BorderSide(color: Colors.green.shade100),
+                                           labelStyle: GoogleFonts.outfit(
+                                             color: isSelected ? Colors.white : Colors.green.shade800,
+                                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                           ),
+                                         ),
+                                       );
+                                     }).toList(),
+                                   ),
+                                 ),
+                               ),
+                               IconButton(
+                                 visualDensity: VisualDensity.compact,
+                                 icon: Icon(Icons.arrow_forward_ios_rounded, color: Colors.green.shade700, size: 18),
+                                 onPressed: () => _scrollCategories(true),
+                               ),
+                             ],
+                           ),
                         ],
                       ),
                     ),
@@ -531,7 +551,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _filterByHajat(List<String> titles) {
     setState(() {
       _selectedCategory = 'Semua';
-      _searchQuery = '';
       _filterByHajatTitles = titles;
     });
     

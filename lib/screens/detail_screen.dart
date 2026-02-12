@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/sholawat.dart';
 import '../providers/audio_provider.dart';
+import '../providers/settings_provider.dart' show fontSizeProvider, fontFamilyProvider, reminderProvider, sleepTimerSettingProvider;
 import '../providers/sholawat_provider.dart';
 import 'doa_sebelum_screen.dart';
 import '../services/download_service.dart';
@@ -17,6 +18,15 @@ class DetailScreen extends ConsumerStatefulWidget {
 }
 
 class _DetailScreenState extends ConsumerState<DetailScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isAutoScroll = false;
+  
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Watch current sholawat so UI updates when song changes in playlist
@@ -24,6 +34,21 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
     final isPlaying = ref.watch(isPlayingProvider).value ?? false;
     final position = ref.watch(positionProvider).value ?? Duration.zero;
     final duration = ref.watch(durationProvider).value ?? Duration.zero;
+
+    // AUTO SCROLL LOGIC
+    if (_isAutoScroll && duration.inMilliseconds > 0 && isPlaying) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          final maxScroll = _scrollController.position.maxScrollExtent;
+          final targetPosition = (position.inMilliseconds / duration.inMilliseconds) * maxScroll;
+          _scrollController.animateTo(
+            targetPosition,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.linear,
+          );
+        }
+      });
+    }
 
     return Scaffold(
       body: Container(
@@ -41,8 +66,9 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
         child: SafeArea(
           child: Column(
             children: [
+              // HEADER
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -87,6 +113,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
               ),
               Expanded(
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
                   child: Column(
                     children: [
@@ -197,8 +224,9 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                               currentSholawat.arabic,
                               textAlign: TextAlign.center,
                               textDirection: TextDirection.rtl,
-                              style: GoogleFonts.amiri(
-                                fontSize: 32,
+                              style: GoogleFonts.getFont(
+                                ref.watch(fontFamilyProvider),
+                                fontSize: ref.watch(fontSizeProvider),
                                 fontWeight: FontWeight.bold,
                                 height: 1.8,
                                 color: Colors.green.shade800,
@@ -279,8 +307,16 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.repeat, size: 28),
-                          onPressed: () {},
+                          icon: Icon(
+                            Icons.auto_stories_outlined,
+                            size: 28,
+                            color: _isAutoScroll ? Colors.green.shade700 : Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isAutoScroll = !_isAutoScroll;
+                            });
+                          },
                         ),
                         IconButton(
                           icon: const Icon(Icons.skip_previous, size: 36),

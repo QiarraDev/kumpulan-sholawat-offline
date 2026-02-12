@@ -12,19 +12,31 @@ class TasbihScreen extends StatefulWidget {
 class _TasbihScreenState extends State<TasbihScreen> {
   int _counter = 0;
   int _totalCount = 0;
-  final int _target = 33;
+  int _targetIndex = 0;
+  final List<int> _targets = [33, 99, 100, 1000];
 
   void _incrementCounter() {
     setState(() {
       _counter++;
       _totalCount++;
-      if (_counter > _target) {
-        _counter = 1;
+      if (_counter >= _targets[_targetIndex]) {
+        _counter = 0;
         HapticFeedback.vibrate(); // Heavier vibration on target reached
+        _showFinishedDialog();
       } else {
-        HapticFeedback.lightImpact(); // Light feedback on каждый tap
+        HapticFeedback.mediumImpact(); 
       }
     });
+  }
+
+  void _showFinishedDialog() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Alhamdulillah, target ${_targets[_targetIndex]} selesai!'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.green.shade800,
+      ),
+    );
   }
 
   void _resetCounter() {
@@ -132,13 +144,20 @@ class _TasbihScreenState extends State<TasbihScreen> {
                       ),
                       Positioned(
                         bottom: 40,
-                        child: Text(
-                          '/ $_target',
-                          style: GoogleFonts.outfit(
+                        child: ActionChip(
+                          label: Text('/ ${_targets[_targetIndex]}'),
+                          backgroundColor: Colors.green.shade900.withOpacity(0.5),
+                          labelStyle: GoogleFonts.outfit(
                             color: Colors.green.shade400,
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
                           ),
+                          onPressed: () {
+                            setState(() {
+                              _targetIndex = (_targetIndex + 1) % _targets.length;
+                              _counter = 0;
+                            });
+                          },
                         ),
                       ),
                     ],

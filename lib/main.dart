@@ -4,9 +4,12 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'screens/home_screen.dart';
 import 'providers/sholawat_provider.dart';
 import 'providers/settings_provider.dart';
+import 'services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await NotificationService().init();
 
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.qiarradev.kumpulan_sholawat_offline.channel.audio',
