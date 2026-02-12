@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.qiarradev.kumpulan_sholawat_offline"
-    compileSdk = 35 // Targeting the latest stable, but setting targetSdk to 36 as requested
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -39,6 +39,12 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
