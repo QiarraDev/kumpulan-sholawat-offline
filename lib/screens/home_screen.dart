@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 import '../providers/sholawat_provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/audio_provider.dart';
 import '../models/sholawat.dart';
 import 'detail_screen.dart';
@@ -63,43 +65,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                        s.category.toLowerCase() == _selectedCategory.toLowerCase();
                 final matchesHajat = _filterByHajatTitles == null || 
                                      _filterByHajatTitles!.contains(s.title);
-                return matchesFavorite && matchesCategory && matchesHajat;
+                final matchesSearch = true; // Search bar removed
+                return matchesFavorite && matchesCategory && matchesHajat && matchesSearch;
               }).toList();
 
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
-                    expandedHeight: 260.0,
+                    expandedHeight: 280.0,
                     floating: false,
                     pinned: true,
-                    backgroundColor: Colors.green.shade900,
+                    backgroundColor: Theme.of(context).primaryColor,
                     iconTheme: const IconThemeData(color: Colors.white),
                     flexibleSpace: FlexibleSpaceBar(
                       background: Container(
-                        color: const Color(0xFF003322), // Dark green matching the banner
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Image.asset(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Theme.of(context).primaryColor,
+                              Theme.of(context).primaryColor.withOpacity(0.8),
+                            ],
+                          ),
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 40, bottom: 20, left: 20, right: 20),
+                            child: Image.asset(
                               'assets/images/banner_calligraphy.png',
-                              fit: BoxFit.contain, // Shows the whole frame/bingkai
+                              fit: BoxFit.contain,
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  stops: const [0.0, 0.2, 0.8, 1.0],
-                                  colors: [
-                                    Colors.black.withOpacity(0.4),
-                                    Colors.transparent,
-                                    Colors.transparent,
-                                    Colors.black.withOpacity(0.4),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
@@ -152,7 +149,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                            },
                                            selectedColor: Colors.green.shade700,
                                            checkmarkColor: Colors.white,
-                                           backgroundColor: Colors.white,
+                                           backgroundColor: Theme.of(context).brightness == Brightness.dark 
+                                               ? Colors.white.withOpacity(0.05) 
+                                               : Colors.white,
                                            side: BorderSide(color: Colors.green.shade100),
                                            labelStyle: GoogleFonts.outfit(
                                              color: isSelected ? Colors.white : Colors.green.shade800,
@@ -171,7 +170,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                ),
                              ],
                            ),
-                        ],
+                         ],
                       ),
                     ),
                   ),
@@ -378,14 +377,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             style: GoogleFonts.outfit(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey.shade800,
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.grey.shade800,
                             ),
                           ),
-                          Text(
-                            '${filteredList.length} Item',
-                            style: GoogleFonts.outfit(
-                              fontSize: 12,
-                              color: Colors.grey.shade500,
+                          TextButton.icon(
+                            onPressed: () {
+                              if (filteredList.isNotEmpty) {
+                                ref.read(audioPlayerServiceProvider).setPlaylist(filteredList, 0);
+                                ref.read(currentSholawatProvider.notifier).state = filteredList[0];
+                              }
+                            },
+                            icon: const Icon(Icons.play_circle_fill, size: 20),
+                            label: Text(
+                              'Putar Semua',
+                              style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 13),
+                            ),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.green.shade700,
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
                             ),
                           ),
                         ],
@@ -449,11 +458,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                               title: Text(
                                 sholawat.title,
-                                style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
+                                style: GoogleFonts.outfit(
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).brightness == Brightness.dark 
+                                      ? Colors.white 
+                                      : Colors.black87,
+                                ),
                               ),
                               subtitle: Text(
                                 sholawat.category,
-                                style: GoogleFonts.outfit(fontSize: 12),
+                                style: GoogleFonts.outfit(
+                                  fontSize: 12,
+                                  color: Theme.of(context).brightness == Brightness.dark 
+                                      ? Colors.green.shade300 
+                                      : Colors.green.shade700,
+                                ),
                               ),
                               trailing: IconButton(
                                 icon: Icon(
@@ -485,12 +504,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, stack) => Center(child: Text('Error: $err')),
-          ),
-          const Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: MiniPlayer(),
           ),
         ],
       ),
@@ -564,6 +577,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+
   Widget _buildDailyQuote() {
     final quotes = [
       "Barangsiapa bersholawat kepadaku satu kali, niscaya Allah bersholawat kepadanya sepuluh kali. (HR. Muslim)",
@@ -576,29 +590,41 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
     final quote = quotes[dayOfYear % quotes.length];
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.green.shade50.withOpacity(0.5),
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.green.shade50.withOpacity(0.5),
         borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.green.shade100),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.green.shade100),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.format_quote_rounded, color: Colors.green.shade700, size: 28),
-              const SizedBox(width: 8),
-              Text(
-                'Quote Hari Ini',
-                style: GoogleFonts.outfit(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green.shade800,
-                  letterSpacing: 1.1,
-                ),
+              Row(
+                children: [
+                  Icon(Icons.format_quote_rounded, color: isDark ? Colors.green.shade400 : Colors.green.shade700, size: 28),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Quote Hari Ini',
+                    style: GoogleFonts.outfit(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.green.shade300 : Colors.green.shade800,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ],
+              ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                icon: Icon(Icons.share_rounded, size: 18, color: isDark ? Colors.green.shade400 : Colors.green.shade700),
+                onPressed: () => Share.share("📖 *Quote Hari Ini*\n\n$quote\n\n- Aplikasi Sholawat Offline"),
               ),
             ],
           ),
@@ -608,7 +634,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             style: GoogleFonts.outfit(
               fontSize: 15,
               fontStyle: FontStyle.italic,
-              color: Colors.green.shade900,
+              color: isDark ? Colors.white.withOpacity(0.9) : Colors.green.shade900,
               height: 1.5,
             ),
           ),
@@ -671,157 +697,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class MiniPlayer extends ConsumerWidget {
-  const MiniPlayer({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentSholawat = ref.watch(currentSholawatProvider);
-    if (currentSholawat == null) return const SizedBox.shrink();
-
-    final isPlaying = ref.watch(isPlayingProvider).value ?? false;
-    final position = ref.watch(positionProvider).value ?? Duration.zero;
-    final duration = ref.watch(durationProvider).value ?? Duration.zero;
-    final progress = duration.inMilliseconds > 0 
-        ? position.inMilliseconds / duration.inMilliseconds 
-        : 0.0;
-
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 500),
-      builder: (context, value, child) {
-        return Transform.translate(
-          offset: Offset(0, 100 * (1 - value)),
-          child: Opacity(
-            opacity: value,
-            child: child,
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.all(16),
-        height: 75,
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark 
-              ? Colors.grey.shade900.withOpacity(0.9) 
-              : Colors.white.withOpacity(0.9),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            )
-          ],
-          border: Border.all(
-            color: Colors.green.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
-            children: [
-              // Progress Line
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.transparent,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.green.shade400),
-                  minHeight: 3,
-                ),
-              ),
-              Center(
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                  leading: Hero(
-                    tag: 'player_icon_${currentSholawat.id}',
-                    child: Container(
-                      width: 45,
-                      height: 45,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.green.shade600, Colors.green.shade800],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(Icons.music_note_rounded, color: Colors.white),
-                    ),
-                  ),
-                  title: Text(
-                    currentSholawat.title,
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.bold, 
-                      fontSize: 15,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Text(
-                    currentSholawat.category,
-                    style: GoogleFonts.outfit(
-                      fontSize: 12, 
-                      color: Colors.green.shade600,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded),
-                        iconSize: 32,
-                        color: Colors.green.shade700,
-                        onPressed: () {
-                          if (isPlaying) {
-                            ref.read(audioPlayerServiceProvider).pause();
-                          } else {
-                            ref.read(audioPlayerServiceProvider).resume();
-                          }
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close_rounded, size: 20, color: Colors.grey),
-                        onPressed: () {
-                          ref.read(audioPlayerServiceProvider).stop();
-                        },
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) => 
-                          DetailScreen(sholawat: currentSholawat),
-                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          return SlideTransition(
-                            position: Tween<Offset>(
-                              begin: const Offset(0, 1),
-                              end: Offset.zero,
-                            ).animate(CurvedAnimation(
-                              parent: animation,
-                              curve: Curves.easeOutCubic,
-                            )),
-                            child: child,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

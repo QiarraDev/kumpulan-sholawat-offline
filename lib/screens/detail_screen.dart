@@ -7,6 +7,7 @@ import '../providers/settings_provider.dart' show fontSizeProvider, fontFamilyPr
 import '../providers/sholawat_provider.dart';
 import 'doa_sebelum_screen.dart';
 import '../services/download_service.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DetailScreen extends ConsumerStatefulWidget {
   final Sholawat sholawat;
@@ -191,17 +192,17 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                             MaterialPageRoute(builder: (context) => const DoaSebelumScreen()),
                           );
                         },
-                        icon: const Icon(Icons.auto_stories, color: Colors.green),
+                        icon: Icon(Icons.auto_stories, color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade300 : Colors.green),
                         label: Text(
                           'BACA NIAT & ADAB',
                           style: GoogleFonts.outfit(
-                            color: Colors.green.shade700,
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade300 : Colors.green.shade700,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1.2,
                           ),
                         ),
                         style: TextButton.styleFrom(
-                          backgroundColor: Colors.green.shade50,
+                          backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : Colors.green.shade50,
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
@@ -229,7 +230,9 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                                 fontSize: ref.watch(fontSizeProvider),
                                 fontWeight: FontWeight.bold,
                                 height: 1.8,
-                                color: Colors.green.shade800,
+                                color: Theme.of(context).brightness == Brightness.dark 
+                                    ? Colors.green.shade300 
+                                    : Colors.green.shade800,
                               ),
                             ),
                             const Padding(
@@ -242,7 +245,9 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                               style: GoogleFonts.outfit(
                                 fontSize: 18,
                                 fontStyle: FontStyle.italic,
-                                color: Colors.grey.shade700,
+                                color: Theme.of(context).brightness == Brightness.dark 
+                                    ? Colors.white.withOpacity(0.8) 
+                                    : Colors.grey.shade700,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -251,7 +256,9 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                               textAlign: TextAlign.center,
                               style: GoogleFonts.outfit(
                                 fontSize: 14,
-                                color: Colors.grey.shade500,
+                                color: Theme.of(context).brightness == Brightness.dark 
+                                    ? Colors.white.withOpacity(0.6) 
+                                    : Colors.grey.shade600,
                               ),
                             ),
                           ],
@@ -388,6 +395,26 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                                 ),
                               );
                             }
+                          },
+                        ),
+                        const SizedBox(width: 40),
+                        _buildSmallActionButton(
+                          icon: Icons.share_outlined,
+                          label: 'Bagikan',
+                          onTap: () {
+                            final text = """
+📖 *${currentSholawat.title}*
+
+${currentSholawat.arabic}
+
+_(${currentSholawat.latin})_
+
+*"${currentSholawat.translation}"*
+
+---
+Diambil dari aplikasi *Kumpulan Sholawat Offline*
+""";
+                            Share.share(text);
                           },
                         ),
                       ],

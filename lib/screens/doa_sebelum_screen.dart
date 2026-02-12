@@ -35,7 +35,7 @@ class DoaSebelumScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('Niat Sebelum Bersholawat'),
+                  _buildSectionTitle(context, 'Niat Sebelum Bersholawat'),
                   const SizedBox(height: 15),
                   _buildDoaCard(
                     context,
@@ -44,7 +44,7 @@ class DoaSebelumScreen extends StatelessWidget {
                     translation: 'Ya Allah, sesungguhnya aku niat bershalawat kepada Nabi SAW untuk mematuhi perintah-Mu, membenarkan Nabi-Mu, didasari rasa cinta dan rindu kepadanya, serta mengagungkan kedudukannya.',
                   ),
                   const SizedBox(height: 30),
-                  _buildSectionTitle('Doa Setelah Bersholawat'),
+                  _buildSectionTitle(context, 'Doa Setelah Bersholawat'),
                   const SizedBox(height: 15),
                   _buildDoaCard(
                     context,
@@ -53,12 +53,12 @@ class DoaSebelumScreen extends StatelessWidget {
                     translation: 'Ya Allah, Tuhan pemilik seruan yang sempurna ini dan shalat yang tegak, berikanlah kepada Nabi Muhammad Al-Wasilah (derajat di surga) dan Al-Fadhilah (keutamaan), dan tempatkanlah beliau pada kedudukan terpuji (Al-Maqam Al-Mahmud) yang telah Engkau janjikan.',
                   ),
                   const SizedBox(height: 30),
-                  _buildSectionTitle('Adab Bersholawat'),
+                  _buildSectionTitle(context, 'Adab Bersholawat'),
                   const SizedBox(height: 15),
-                  _buildAdabItem('1', 'Menghadirkan Hati', 'Rasakan kehadiran baginda Nabi Muhammad SAW dalam hati saat membaca.'),
-                  _buildAdabItem('2', 'Suci dari Hadats', 'Sangat diutamakan dalam keadaan berwudhu.'),
-                  _buildAdabItem('3', 'Penuh Tawadhu', 'Membaca dengan penuh rasa rendah hati dan rasa hormat.'),
-                  _buildAdabItem('4', 'Khusyuk & Tartil', 'Membaca dengan suara yang santun dan tidak terburu-buru.'),
+                  _buildAdabItem(context, '1', 'Menghadirkan Hati', 'Rasakan kehadiran baginda Nabi Muhammad SAW dalam hati saat membaca.'),
+                  _buildAdabItem(context, '2', 'Suci dari Hadats', 'Sangat diutamakan dalam keadaan berwudhu.'),
+                  _buildAdabItem(context, '3', 'Penuh Tawadhu', 'Membaca dengan penuh rasa rendah hati dan rasa hormat.'),
+                  _buildAdabItem(context, '4', 'Khusyuk & Tartil', 'Membaca dengan suara yang santun dan tidak terburu-buru.'),
                   const SizedBox(height: 50),
                 ],
               ),
@@ -69,31 +69,33 @@ class DoaSebelumScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(BuildContext context, String title) {
     return Text(
       title,
       style: GoogleFonts.outfit(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.green.shade900,
+        color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade300 : Colors.green.shade900,
       ),
     );
   }
 
   Widget _buildDoaCard(BuildContext context, {required String arabic, required String latin, required String translation}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
+          if (!isDark)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
         ],
-        border: Border.all(color: Colors.green.shade100),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.green.shade100),
       ),
       child: Column(
         children: [
@@ -104,6 +106,7 @@ class DoaSebelumScreen extends StatelessWidget {
               fontSize: 22,
               height: 1.8,
               fontWeight: FontWeight.bold,
+              color: isDark ? Colors.green.shade300 : Colors.black87,
             ),
           ),
           const SizedBox(height: 15),
@@ -113,7 +116,7 @@ class DoaSebelumScreen extends StatelessWidget {
             style: GoogleFonts.outfit(
               fontSize: 14,
               fontStyle: FontStyle.italic,
-              color: Colors.green.shade800,
+              color: isDark ? Colors.white.withOpacity(0.8) : Colors.green.shade800,
             ),
           ),
           const Divider(height: 30),
@@ -122,7 +125,7 @@ class DoaSebelumScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
               fontSize: 14,
-              color: Colors.grey.shade700,
+              color: isDark ? Colors.white.withOpacity(0.6) : Colors.grey.shade700,
             ),
           ),
         ],
@@ -130,7 +133,8 @@ class DoaSebelumScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAdabItem(String number, String title, String desc) {
+  Widget _buildAdabItem(BuildContext context, String number, String title, String desc) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -140,13 +144,16 @@ class DoaSebelumScreen extends StatelessWidget {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              color: Colors.green.shade700,
+              color: isDark ? Colors.green.shade400 : Colors.green.shade700,
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 number,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: isDark ? Colors.black : Colors.white, 
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -157,11 +164,18 @@ class DoaSebelumScreen extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.outfit(
+                    fontSize: 16, 
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
                 ),
                 Text(
                   desc,
-                  style: GoogleFonts.outfit(fontSize: 14, color: Colors.grey.shade600),
+                  style: GoogleFonts.outfit(
+                    fontSize: 14, 
+                    color: isDark ? Colors.white.withOpacity(0.6) : Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),

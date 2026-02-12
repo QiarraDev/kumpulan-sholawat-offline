@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/settings_provider.dart';
 import '../services/notification_service.dart';
 
@@ -34,6 +35,12 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(themeModeProvider.notifier).toggleTheme();
               },
             ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.palette_outlined),
+            title: const Text('Tema Warna'),
+            subtitle: const Text('Pilih warna utama aplikasi'),
+            onTap: () => _showThemeSelector(context, ref),
           ),
           const Divider(),
           const Padding(
@@ -191,6 +198,96 @@ class SettingsScreen extends ConsumerWidget {
             child: Text(mins == 0 ? 'Matikan' : '$mins menit'),
           );
         }).toList(),
+      ),
+    );
+  }
+
+  void _showThemeSelector(BuildContext context, WidgetRef ref) {
+    final themes = [
+      {'name': 'Emerald Green', 'color': const Color(0xFF2E7D32)},
+      {'name': 'Royal Blue', 'color': const Color(0xFF1565C0)},
+      {'name': 'Deep Maroon', 'color': const Color(0xFF880E4F)},
+      {'name': 'Luxury Gold', 'color': const Color(0xFFB8860B)},
+      {'name': 'Deep Purple', 'color': const Color(0xFF4A148C)},
+      {'name': 'Teal Ocean', 'color': const Color(0xFF006064)},
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Pilih Tema Warna',
+              style: GoogleFonts.outfit(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 20),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 15,
+                mainAxisSpacing: 15,
+                childAspectRatio: 1,
+              ),
+              itemCount: themes.length,
+              itemBuilder: (context, index) {
+                final theme = themes[index];
+                final color = theme['color'] as Color;
+                final isSelected = ref.watch(appColorProvider) == color;
+
+                return GestureDetector(
+                  onTap: () {
+                    ref.read(appColorProvider.notifier).setColor(color);
+                    Navigator.pop(context);
+                  },
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                          border: isSelected 
+                            ? Border.all(color: Colors.green, width: 3) 
+                            : null,
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            )
+                          ],
+                        ),
+                        child: isSelected 
+                          ? const Icon(Icons.check, color: Colors.white) 
+                          : null,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        theme['name'] as String,
+                        style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w500),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

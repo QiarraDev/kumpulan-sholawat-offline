@@ -41,14 +41,14 @@ class FadhilahScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildVerseSection(),
+                  _buildVerseSection(context),
                   const SizedBox(height: 30),
                   Text(
                     'Fadhilah Dari Hadits',
                     style: GoogleFonts.outfit(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.green.shade900,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.green.shade300 : Colors.green.shade900,
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -80,6 +80,69 @@ class FadhilahScreen extends StatelessWidget {
                     source: 'HR. Tirmidzi',
                     icon: Icons.sentiment_very_satisfied,
                   ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Kedekatan di Hari Kiamat',
+                    desc: 'Manusia yang paling dekat denganku pada hari kiamat adalah yang paling banyak bershalawat kepadaku.',
+                    source: 'HR. Tirmidzi',
+                    icon: Icons.people_outline_rounded,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Diangkat 10 Derajat',
+                    desc: 'Barangsiapa bershalawat kepadaku satu kali, Allah akan menghapus sepuluh dosa darinya dan mengangkat sepuluh derajat untuknya.',
+                    source: 'HR. An-Nasa\'i',
+                    icon: Icons.trending_up_rounded,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Mendapat Salam dari Allah',
+                    desc: 'Sesungguhnya malaikat telah datang kepadaku dan berkata, "Wahai Muhammad, tidakkah engkau merasa senang bahwa Rabb-mu berfirman: Tidaklah salah seorang umatmu bershalawat kepadamu sekali melainkan Aku bershalawat kepadanya sepuluh kali."',
+                    source: 'HR. An-Nasa\'i',
+                    icon: Icons.chat_bubble_outline_rounded,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Dikabulkan 100 Hajat',
+                    desc: 'Barangsiapa bershalawat kepadaku 100 kali dalam sehari, maka Allah akan mengabulkan 100 hajatnya; 70 untuk akhiratnya dan 30 untuk dunianya.',
+                    source: 'HR. Ibnu Najjar',
+                    icon: Icons.auto_awesome_motion_rounded,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Didoakan Para Malaikat',
+                    desc: 'Tidaklah seorang muslim bershalawat kepadaku, melainkan para malaikat akan mendoakannya selama ia bershalawat kepadaku.',
+                    source: 'HR. Ahmad',
+                    icon: Icons.shield_moon_outlined,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Cahaya di Jembatan Shirot',
+                    desc: 'Bershalawatlah kalian kepadaku, karena shalawatmu kepadaku adalah cahaya di atas Shirot.',
+                    source: 'HR. Ad-Dailami',
+                    icon: Icons.light_mode_rounded,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Majelis Yang Berkah',
+                    desc: 'Setiap majelis (perkumpulan) yang di dalamnya tidak dibacakan shalawat atas Nabi, maka majelis itu akan menjadi penyesalan bagi mereka di hari kiamat.',
+                    source: 'HR. Tirmidzi',
+                    icon: Icons.groups_3_rounded,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Pencuci Segala Dosa',
+                    desc: 'Sholawat kepadaku itu lebih cepat menghapuskan dosa-dosa daripada air memadamkan api.',
+                    source: 'Sayyidina Abu Bakar Ash-Shiddiq',
+                    icon: Icons.water_drop_rounded,
+                  ),
+                  _buildVirtueCard(
+                    context,
+                    title: 'Keberkahan Rezeki',
+                    desc: 'Perbanyaklah sholawat kepadaku, karena ia mampu menghilangkan kefakiran dan mendatangkan keberhimpunan rezeki.',
+                    source: 'Kalam Ulama',
+                    icon: Icons.account_balance_wallet_rounded,
+                  ),
                   const SizedBox(height: 50),
                 ],
               ),
@@ -90,20 +153,22 @@ class FadhilahScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVerseSection() {
+  Widget _buildVerseSection(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
+          if (!isDark)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
         ],
-        border: Border.all(color: Colors.green.shade100),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.green.shade100),
       ),
       child: Column(
         children: [
@@ -115,7 +180,7 @@ class FadhilahScreen extends StatelessWidget {
               fontSize: 24,
               fontWeight: FontWeight.bold,
               height: 1.8,
-              color: Colors.green.shade900,
+              color: isDark ? Colors.green.shade300 : Colors.green.shade900,
             ),
           ),
           const SizedBox(height: 20),
@@ -125,7 +190,7 @@ class FadhilahScreen extends StatelessWidget {
             style: GoogleFonts.outfit(
               fontSize: 15,
               fontStyle: FontStyle.italic,
-              color: Colors.grey.shade800,
+              color: isDark ? Colors.white.withOpacity(0.9) : Colors.grey.shade800,
             ),
           ),
           const SizedBox(height: 12),
@@ -134,7 +199,7 @@ class FadhilahScreen extends StatelessWidget {
             style: GoogleFonts.outfit(
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: Colors.green.shade700,
+              color: isDark ? Colors.green.shade400 : Colors.green.shade700,
             ),
           ),
         ],
@@ -143,13 +208,22 @@ class FadhilahScreen extends StatelessWidget {
   }
 
   Widget _buildVirtueCard(BuildContext context, {required String title, required String desc, required String source, required IconData icon}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade100),
+        boxShadow: [
+          if (!isDark)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+        ],
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade100),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,10 +231,10 @@ class FadhilahScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.green.shade50,
+              color: isDark ? Colors.green.shade400.withOpacity(0.1) : Colors.green.shade50,
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: Colors.green.shade700, size: 24),
+            child: Icon(icon, color: isDark ? Colors.green.shade400 : Colors.green.shade700, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -172,6 +246,7 @@ class FadhilahScreen extends StatelessWidget {
                   style: GoogleFonts.outfit(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -179,17 +254,17 @@ class FadhilahScreen extends StatelessWidget {
                   desc,
                   style: GoogleFonts.outfit(
                     fontSize: 14,
-                    color: Colors.grey.shade700,
+                    color: isDark ? Colors.white.withOpacity(0.8) : Colors.grey.shade700,
                     height: 1.4,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   source,
                   style: GoogleFonts.outfit(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green.shade700,
+                    color: isDark ? Colors.green.shade400 : Colors.green.shade700,
                   ),
                 ),
               ],

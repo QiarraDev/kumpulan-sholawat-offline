@@ -69,6 +69,27 @@ class FontFamilyNotifier extends StateNotifier<String> {
 
 final sleepTimerSettingProvider = StateProvider<int?>((ref) => null);
 
+// APP COLOR THEME PROVIDER
+final appColorProvider = StateNotifierProvider<AppColorNotifier, Color>((ref) {
+  final service = ref.watch(localDataServiceProvider);
+  return AppColorNotifier(service);
+});
+
+class AppColorNotifier extends StateNotifier<Color> {
+  final LocalDataService _service;
+  AppColorNotifier(this._service) : super(const Color(0xFF2E7D32)) {
+    final int? colorValue = _service.settingsBox.get('app_color');
+    if (colorValue != null) {
+      state = Color(colorValue);
+    }
+  }
+
+  Future<void> setColor(Color color) async {
+    await _service.settingsBox.put('app_color', color.value);
+    state = color;
+  }
+}
+
 // REMINDER PROVIDER
 final reminderProvider = StateNotifierProvider<ReminderNotifier, bool>((ref) {
   final service = ref.watch(localDataServiceProvider);

@@ -7,6 +7,7 @@ class LocalDataService {
   static const String sholawatBoxName = 'sholawat_box';
   static const String settingsBoxName = 'settings_box';
   static const String favoritesBoxName = 'favorites_box';
+  static const String tasbihBoxName = 'tasbih_box';
 
   Future<void> init() async {
     await Hive.initFlutter();
@@ -14,6 +15,7 @@ class LocalDataService {
     await Hive.openBox<Sholawat>(sholawatBoxName);
     await Hive.openBox(settingsBoxName);
     await Hive.openBox<bool>(favoritesBoxName);
+    await Hive.openBox<int>(tasbihBoxName);
   }
 
   Future<List<Sholawat>> loadSholawatFromJson() async {
@@ -25,6 +27,7 @@ class LocalDataService {
   Box<Sholawat> get sholawatBox => Hive.box<Sholawat>(sholawatBoxName);
   Box get settingsBox => Hive.box(settingsBoxName);
   Box<bool> get favoritesBox => Hive.box<bool>(favoritesBoxName);
+  Box<int> get tasbihBox => Hive.box<int>(tasbihBoxName);
 
   bool isFavorite(int id) {
     return favoritesBox.get(id.toString(), defaultValue: false) ?? false;
