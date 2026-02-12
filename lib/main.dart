@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'screens/main_navigation_screen.dart';
+import 'screens/splash_screen.dart';
 import 'providers/sholawat_provider.dart';
 import 'providers/settings_provider.dart';
 import 'services/notification_service.dart';
@@ -68,7 +68,7 @@ class MyApp extends ConsumerWidget {
         scaffoldBackgroundColor: const Color(0xFF00120B),
       ),
       themeMode: themeMode,
-      home: const MainNavigationScreen(),
+      home: const SplashScreen(),
     );
   }
 }

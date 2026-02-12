@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 import '../providers/settings_provider.dart';
 import '../services/notification_service.dart';
 
@@ -89,6 +90,7 @@ class SettingsScreen extends ConsumerWidget {
                 final isEnabled = ref.read(reminderProvider);
                 if (isEnabled) {
                   final service = NotificationService();
+                  await service.requestPermissions(); // Request for Android 13+
                   await service.scheduleDailySholawatReminder();
                   await service.scheduleFridaySholawatReminder();
                   if (context.mounted) {
@@ -112,32 +114,56 @@ class SettingsScreen extends ConsumerWidget {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              'Lainnya',
+              'Dukungan & Informasi',
               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('Tentang Aplikasi'),
+            leading: const Icon(Icons.share_rounded, color: Colors.blue),
+            title: const Text('Bagikan Aplikasi'),
+            subtitle: const Text('Ajak teman bersholawat bersama'),
             onTap: () {
-              showAboutDialog(
-                context: context,
-                applicationName: 'Sholawat Offline',
-                applicationVersion: '1.0.0',
-                applicationIcon: const Icon(Icons.music_note, color: Colors.green, size: 48),
-                children: [
-                  const Text('Aplikasi Sholawat Offline gratis untuk umat muslim.'),
-                ],
+              Share.share(
+                'Yuk download aplikasi Kumpulan Sholawat Offline! Dapatkan ketenangan hati dengan lantunan sholawat menyentuh kalbu.\n\nDownload di sini: https://play.google.com/store/apps/details?id=com.qiarradev.kumpulan_sholawat_offline',
               );
             },
           ),
           ListTile(
-            leading: const Icon(Icons.privacy_tip_outlined),
-            title: const Text('Kebijakan Privasi'),
+            leading: const Icon(Icons.star_rate_rounded, color: Colors.orange),
+            title: const Text('Beri Rating'),
+            subtitle: const Text('Dukung kami di Play Store'),
             onTap: () {
-              // TODO
+              // TODO: Tambahkan link Play Store asli jika sudah rilis
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Halaman Play Store akan segera tersedia')),
+              );
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.privacy_tip_outlined, color: Colors.green),
+            title: const Text('Kebijakan Privasi'),
+            subtitle: const Text('Data & Keamanan pengguna'),
+            onTap: () {
+              _showPrivacyPolicy(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.info_outline, color: Colors.grey),
+            title: const Text('Tentang Aplikasi'),
+            subtitle: const Text('Versi 1.0.0'),
+            onTap: () => _showAboutApp(context),
+          ),
+          const SizedBox(height: 30),
+          Center(
+            child: Text(
+              'QiarraDev © 2026',
+              style: GoogleFonts.outfit(
+                fontSize: 12,
+                color: Colors.grey.withOpacity(0.5),
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
         ],
       ),
     );
@@ -288,6 +314,94 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 20),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showAboutApp(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Kumpulan Sholawat Offline',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Versi 1.0.0',
+              style: GoogleFonts.outfit(color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Aplikasi ini dibuat untuk memudahkan umat muslim mendengarkan lantunan sholawat kapan saja dan di mana saja tanpa koneksi internet.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(fontSize: 14, height: 1.5),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Dikembangkan oleh:',
+              style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+            Text(
+              'QiarraDev Team',
+              style: GoogleFonts.outfit(fontSize: 14),
+            ),
+            const SizedBox(height: 24),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Tutup'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showPrivacyPolicy(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Kebijakan Privasi'),
+        content: SingleChildScrollView(
+          child: Text(
+            'Kumpulan Sholawat Offline menghormati privasi Anda. Aplikasi ini tidak mengumpulkan data pribadi apa pun.\n\n'
+            '1. Izin Media: Hanya digunakan untuk memutar file audio yang tersedia di dalam aplikasi.\n'
+            '2. Izin Notifikasi: Digunakan untuk fitur pengingat sholawat harian.\n'
+            '3. Data Offline: Semua progres Tasbih disimpan secara lokal di perangkat Anda.',
+            style: GoogleFonts.outfit(fontSize: 14, height: 1.6),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Mengerti'),
+          ),
+        ],
       ),
     );
   }

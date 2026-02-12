@@ -21,6 +21,13 @@ class NotificationService {
     await _notificationsPlugin.initialize(initializationSettings);
   }
 
+  Future<void> requestPermissions() async {
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+        _notificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+    await androidImplementation?.requestNotificationsPermission();
+  }
+
   Future<void> scheduleDailySholawatReminder() async {
     // Android specific details
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(

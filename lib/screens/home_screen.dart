@@ -230,7 +230,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 style: GoogleFonts.outfit(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.grey.shade800,
+                                  color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.grey.shade800,
                                 ),
                               ),
                               Row(
