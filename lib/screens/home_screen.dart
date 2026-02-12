@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,28 +24,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _showOnlyFavorites = false;
   String _selectedCategory = 'Semua';
   List<String>? _filterByHajatTitles;
-
-  final List<String> _categories = ['Semua', 'Favorit', 'Populer', 'Klasik', 'Sholawat Nabi', 'Hajat'];
   final ScrollController _hajatScrollController = ScrollController();
-  final ScrollController _categoryScrollController = ScrollController();
 
-  void _scrollCategories(bool forward) {
-    if (!_categoryScrollController.hasClients) return;
-    final double newOffset = forward 
-        ? _categoryScrollController.offset + 150 
-        : _categoryScrollController.offset - 150;
-        
-    _categoryScrollController.animateTo(
-      newOffset.clamp(0.0, _categoryScrollController.position.maxScrollExtent),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
 
   @override
   void dispose() {
     _hajatScrollController.dispose();
-    _categoryScrollController.dispose();
     super.dispose();
   }
 
@@ -78,26 +63,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     backgroundColor: Theme.of(context).primaryColor,
                     iconTheme: const IconThemeData(color: Colors.white),
                     flexibleSpace: FlexibleSpaceBar(
-                      background: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Theme.of(context).primaryColor,
-                              Theme.of(context).primaryColor.withOpacity(0.8),
-                            ],
+                      background: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          // Background: Blurred to fill everything
+                          Image.asset(
+                            'assets/images/banner_calligraphy.png',
+                            fit: BoxFit.cover,
                           ),
-                        ),
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 40, bottom: 20, left: 20, right: 20),
+                          // Dark overlay for readability
+                          Container(
+                            color: Colors.black.withOpacity(0.3),
+                          ),
+                          // Blur effect
+                          ClipRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                color: Colors.black.withOpacity(0.2),
+                              ),
+                            ),
+                          ),
+                          // Foreground: Sharp image with contained frame
+                          Center(
                             child: Image.asset(
                               'assets/images/banner_calligraphy.png',
                               fit: BoxFit.contain,
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
                     actions: [
@@ -115,70 +109,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildDailyQuote(),
-                           const SizedBox(height: 20),
-                           Row(
-                             children: [
-                               IconButton(
-                                 visualDensity: VisualDensity.compact,
-                                 icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.green.shade700, size: 18),
-                                 onPressed: () => _scrollCategories(false),
-                               ),
-                               Expanded(
-                                 child: SingleChildScrollView(
-                                   controller: _categoryScrollController,
-                                   scrollDirection: Axis.horizontal,
-                                   physics: const BouncingScrollPhysics(),
-                                   child: Row(
-                                     children: _categories.map((cat) {
-                                       final isSelected = _selectedCategory == cat;
-                                       return Padding(
-                                         padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                         child: FilterChip(
-                                           selected: isSelected,
-                                           label: Text(cat),
-                                           onSelected: (val) {
-                                             setState(() {
-                                               _selectedCategory = cat;
-                                               _filterByHajatTitles = null;
-                                             });
-                                           },
-                                           selectedColor: Colors.green.shade700,
-                                           checkmarkColor: Colors.white,
-                                           backgroundColor: Theme.of(context).brightness == Brightness.dark 
-                                               ? Colors.white.withOpacity(0.05) 
-                                               : Colors.white,
-                                           side: BorderSide(color: Colors.green.shade100),
-                                           labelStyle: GoogleFonts.outfit(
-                                             color: isSelected ? Colors.white : Colors.green.shade800,
-                                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                           ),
-                                         ),
-                                       );
-                                     }).toList(),
-                                   ),
-                                 ),
-                               ),
-                               IconButton(
-                                 visualDensity: VisualDensity.compact,
-                                 icon: Icon(Icons.arrow_forward_ios_rounded, color: Colors.green.shade700, size: 18),
-                                 onPressed: () => _scrollCategories(true),
-                               ),
-                             ],
-                           ),
-                         ],
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
-                      child: Column(
-                        children: [
+                          const SizedBox(height: 16),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -620,11 +556,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                 ],
-              ),
-              IconButton(
-                visualDensity: VisualDensity.compact,
-                icon: Icon(Icons.share_rounded, size: 18, color: isDark ? Colors.green.shade400 : Colors.green.shade700),
-                onPressed: () => Share.share("📖 *Quote Hari Ini*\n\n$quote\n\n- Aplikasi Sholawat Offline"),
               ),
             ],
           ),
