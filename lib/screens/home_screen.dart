@@ -286,15 +286,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   color: Colors.grey.shade800,
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.arrow_forward_rounded, color: Colors.green.shade600, size: 24),
-                                onPressed: () {
-                                  _hajatScrollController.animateTo(
-                                    _hajatScrollController.offset + 200,
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.easeInOut,
-                                  );
-                                },
+                              Row(
+                                children: [
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: Icon(Icons.arrow_back_rounded, color: Colors.green.shade600, size: 24),
+                                    onPressed: () {
+                                      final newOffset = _hajatScrollController.offset - 200;
+                                      _hajatScrollController.animateTo(
+                                        newOffset < 0 ? 0 : newOffset,
+                                        duration: const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    icon: Icon(Icons.arrow_forward_rounded, color: Colors.green.shade600, size: 24),
+                                    onPressed: () {
+                                      final maxScroll = _hajatScrollController.position.maxScrollExtent;
+                                      final newOffset = _hajatScrollController.offset + 200;
+                                      _hajatScrollController.animateTo(
+                                        newOffset > maxScroll ? maxScroll : newOffset,
+                                        duration: const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -328,8 +347,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   color: Colors.purple.shade600,
                                   onTap: () => _filterByHajat(['Sholawat Badar', 'Sholawat Ibrahimiyah']),
                                 ),
-                                const SizedBox(width: 8),
-                                Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey.shade300, size: 14),
                                 const SizedBox(width: 16),
                               ],
                             ),
