@@ -91,11 +91,15 @@ class SupabaseService {
   }
 
   static Future<void> postPrayer(String name, String message) async {
-    await client.from('prayer_wall').insert({
-      'name': name,
-      'message': message,
-      'user_id': currentUser?.id,
-    });
+    try {
+      await client.from('prayer_wall').insert({
+        'name': name,
+        'message': message,
+      });
+    } catch (e) {
+      debugPrint("Error posting prayer: $e");
+      rethrow;
+    }
   }
 
   static Future<void> aamiinPrayer(int prayerId) async {
