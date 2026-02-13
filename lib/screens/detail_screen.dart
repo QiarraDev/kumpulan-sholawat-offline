@@ -74,7 +74,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 32),
+                      icon: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 28),
                       onPressed: () => Navigator.pop(context),
                     ),
                     Column(
