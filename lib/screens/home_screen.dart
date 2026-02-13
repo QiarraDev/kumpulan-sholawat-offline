@@ -13,6 +13,8 @@ import 'fadhilah_screen.dart';
 import 'doa_sebelum_screen.dart';
 import 'tasbih_screen.dart';
 import '../services/download_service.dart';
+import '../services/ad_service.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -26,11 +28,72 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String _selectedCategory = 'Semua';
   List<String>? _filterByHajatTitles;
   final ScrollController _hajatScrollController = ScrollController();
+  BannerAd? _bannerAd;
+  bool _isBannerLoaded = false;
+  InterstitialAd? _interstitialAd;
+  bool _isInterstitialLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBannerAd();
+    _loadInterstitialAd();
+  }
+
+  void _loadInterstitialAd() {
+    AdService.loadInterstitialAd(
+      onAdLoaded: (ad) {
+        _interstitialAd = ad;
+        _isInterstitialLoaded = true;
+        _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+          onAdDismissedFullScreenContent: (ad) {
+            ad.dispose();
+            _isInterstitialLoaded = false;
+            _loadInterstitialAd(); // Reload after dismissed
+          },
+          onAdFailedToShowFullScreenContent: (ad, error) {
+            ad.dispose();
+            _isInterstitialLoaded = false;
+            _loadInterstitialAd(); // Reload after failed
+          },
+        );
+      },
+      onAdFailedToLoad: (error) {
+        debugPrint('InterstitialAd failed to load: $error');
+        _isInterstitialLoaded = false;
+      },
+    );
+  }
+
+  void _showInterstitialAd(VoidCallback onDone) {
+    if (_isInterstitialLoaded && _interstitialAd != null) {
+      _interstitialAd!.show();
+      onDone();
+    } else {
+      onDone();
+    }
+  }
+
+  void _loadBannerAd() {
+    _bannerAd = AdService.createBannerAd(
+      onAdLoaded: (ad) {
+        setState(() {
+          _isBannerLoaded = true;
+        });
+      },
+      onAdFailedToLoad: (ad, error) {
+        ad.dispose();
+        debugPrint("Banner Ad failed to load: $error");
+      },
+    )..load();
+  }
 
 
   @override
   void dispose() {
     _hajatScrollController.dispose();
+    _bannerAd?.dispose();
+    _interstitialAd?.dispose();
     super.dispose();
   }
 
@@ -40,6 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
+      bottomNavigationBar: _buildBannerAdWidget(),
       body: Stack(
         children: [
           sholawatAsync.when(
@@ -438,13 +502,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ],
                               ),
                               onTap: () {
-                                ref.read(audioPlayerServiceProvider).setPlaylist(filteredList, index);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DetailScreen(sholawat: sholawat),
-                                  ),
-                                );
+                                _showInterstitialAd(() {
+                                  ref.read(audioPlayerServiceProvider).setPlaylist(filteredList, index);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailScreen(sholawat: sholawat),
+                                    ),
+                                  );
+                                });
                               },
                             ),
                           );
@@ -649,5 +715,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Widget? _buildBannerAdWidget() {
+    if (_isBannerLoaded && _bannerAd != null) {
+      return Container(
+        alignment: Alignment.center,
+        width: _bannerAd!.size.width.toDouble(),
+        height: _bannerAd!.size.height.toDouble(),
+        child: AdWidget(ad: _bannerAd!),
+      );
+    }
+    return null;
   }
 }

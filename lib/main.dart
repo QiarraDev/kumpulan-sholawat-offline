@@ -6,9 +6,11 @@ import 'screens/splash_screen.dart';
 import 'providers/sholawat_provider.dart';
 import 'providers/settings_provider.dart';
 import 'services/notification_service.dart';
+import 'services/ad_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AdService.init();
   await initializeDateFormatting('id_ID', null);
   
   await NotificationService().init();
