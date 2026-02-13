@@ -16,6 +16,7 @@ import 'prayer_wall_screen.dart';
 import '../services/download_service.dart';
 import '../services/ad_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import '../services/supabase_service.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -730,6 +731,62 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildJamiyyahCounter() {
+    return StreamBuilder<int>(
+      stream: SupabaseService.getGlobalCounterStream(),
+      builder: (context, snapshot) {
+        final count = snapshot.data ?? 0;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.green.shade900.withOpacity(0.3) : Colors.green.shade50,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.green.withOpacity(0.2)),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.people_alt_rounded, color: Colors.green, size: 24),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Jam\'iyyah Online',
+                      style: GoogleFonts.outfit(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.green.shade300 : Colors.green.shade800,
+                      ),
+                    ),
+                    Text(
+                      'Sholawat dibaca komunitas',
+                      style: GoogleFonts.outfit(
+                        fontSize: 10,
+                        color: isDark ? Colors.white70 : Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                count.toString(),
+                style: GoogleFonts.outfit(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.green.shade900,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

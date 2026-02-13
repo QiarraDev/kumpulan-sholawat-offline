@@ -74,7 +74,7 @@ class _PrayerWallScreenState extends State<PrayerWallScreen> {
             itemBuilder: (context, index) {
               final prayer = prayers[index];
               return Card(
-                margin: const EdgeInsets.bottom(12),
+                margin: const EdgeInsets.only(bottom: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
