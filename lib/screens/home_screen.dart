@@ -12,6 +12,7 @@ import 'settings_screen.dart';
 import 'fadhilah_screen.dart';
 import 'doa_sebelum_screen.dart';
 import 'tasbih_screen.dart';
+import '../services/download_service.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -410,14 +411,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       : Colors.green.shade700,
                                 ),
                               ),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  isFav ? Icons.favorite : Icons.favorite_border,
-                                  color: isFav ? Colors.red : Colors.grey,
-                                ),
-                                onPressed: () {
-                                  ref.read(favoritesProvider.notifier).toggleFavorite(sholawat.id);
-                                },
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  FutureBuilder<bool>(
+                                    future: DownloadService.isDownloaded(sholawat.audio.split('/').last),
+                                    builder: (context, snapshot) {
+                                      final isDownloaded = snapshot.data ?? false;
+                                      return Icon(
+                                        isDownloaded ? Icons.check_circle : Icons.cloud_download_outlined,
+                                        size: 20,
+                                        color: isDownloaded ? Colors.green : Colors.grey,
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 4),
+                                  IconButton(
+                                    icon: Icon(
+                                      isFav ? Icons.favorite : Icons.favorite_border,
+                                      color: isFav ? Colors.red : Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      ref.read(favoritesProvider.notifier).toggleFavorite(sholawat.id);
+                                    },
+                                  ),
+                                ],
                               ),
                               onTap: () {
                                 ref.read(audioPlayerServiceProvider).setPlaylist(filteredList, index);

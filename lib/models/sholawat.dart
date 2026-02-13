@@ -25,6 +25,9 @@ class Sholawat extends HiveObject {
   @HiveField(6)
   final String category;
 
+  @HiveField(7)
+  final String? url;
+
   Sholawat({
     required this.id,
     required this.title,
@@ -33,6 +36,7 @@ class Sholawat extends HiveObject {
     required this.translation,
     required this.audio,
     required this.category,
+    this.url,
   });
 
   factory Sholawat.fromJson(Map<String, dynamic> json) {
@@ -44,6 +48,7 @@ class Sholawat extends HiveObject {
       translation: json['translation'],
       audio: json['audio'],
       category: json['category'],
+      url: json['url'],
     );
   }
 
@@ -56,6 +61,7 @@ class Sholawat extends HiveObject {
       'translation': translation,
       'audio': audio,
       'category': category,
+      'url': url,
     };
   }
 }

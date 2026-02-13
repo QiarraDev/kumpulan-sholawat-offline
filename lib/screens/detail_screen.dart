@@ -381,15 +381,22 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                           icon: Icons.file_download_outlined,
                           label: 'Simpan',
                           onTap: () async {
-                            final result = await DownloadService.downloadAudio(
-                              currentSholawat.audio,
+                            if (currentSholawat.url == null || currentSholawat.url!.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Link download tidak tersedia")),
+                              );
+                              return;
+                            }
+
+                            final result = await DownloadService.saveToPublic(
+                              currentSholawat.url!,
                               "${currentSholawat.title.replaceAll(' ', '_')}.mp3",
                             );
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(result ?? "Gagal mengunduh"),
-                                  backgroundColor: result?.contains("Saved") == true 
+                                  backgroundColor: result?.contains("Berhasil") == true 
                                       ? Colors.green.shade800 
                                       : Colors.red.shade800,
                                 ),

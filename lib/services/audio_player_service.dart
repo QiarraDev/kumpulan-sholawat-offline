@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import '../models/sholawat.dart';
+import 'download_service.dart';
 
 class AudioPlayerService {
   final AudioPlayer _player = AudioPlayer();
@@ -52,37 +53,38 @@ class AudioPlayerService {
   Future<void> setPlaylist(List<Sholawat> list, int initialIndex) async {
     _currentPlaylist = list;
     try {
-      debugPrint("DEBUG: Preparing playlist offline...");
+      debugPrint("DEBUG: Preparing playlist...");
       
-      final tempDir = await getTemporaryDirectory();
       final List<AudioSource> sources = [];
 
       for (var sholawat in list) {
         final fileName = sholawat.audio.split('/').last;
-        final file = File('${tempDir.path}/$fileName');
+        final localPath = await DownloadService.getLocalPath(fileName);
+        final localFile = File(localPath);
         
-        // Copy asset ke file jika belum ada atau untuk memastikan fresh
-        if (!await file.exists()) {
-          debugPrint("DEBUG: Copying ${sholawat.audio} to local storage...");
-          final data = await rootBundle.load(sholawat.audio);
-          final bytes = data.buffer.asUint8List();
-          await file.writeAsBytes(bytes);
-          debugPrint("DEBUG: Copy SUCCESS: ${file.path}");
+        if (await localFile.exists()) {
+          debugPrint("DEBUG: [PLAYER] LOCAL: $localPath");
+          sources.add(
+            AudioSource.file(localPath, tag: _createMediaItem(sholawat)),
+          );
+        } else if (sholawat.url != null && sholawat.url!.isNotEmpty) {
+          debugPrint("DEBUG: [PLAYER] REMOTE: ${sholawat.url}");
+          sources.add(
+            AudioSource.uri(Uri.parse(sholawat.url!), tag: _createMediaItem(sholawat)),
+          );
+          DownloadService.downloadFromUrl(sholawat.url!, fileName);
+        } else {
+          final assetPath = sholawat.audio.startsWith('assets/') 
+              ? sholawat.audio 
+              : "assets/audio/${sholawat.audio}";
+          debugPrint("DEBUG: [PLAYER] ASSET: $assetPath");
+          sources.add(
+            AudioSource.uri(Uri.parse('asset:///$assetPath'), tag: _createMediaItem(sholawat)),
+          );
         }
-
-        sources.add(
-          AudioSource.file(
-            file.path,
-            tag: MediaItem(
-              id: sholawat.id.toString(),
-              album: "Kumpulan Sholawat",
-              title: sholawat.title,
-              artist: sholawat.category,
-              artUri: Uri.parse("https://ui-avatars.com/api/?name=${sholawat.title}&background=2E7D32&color=fff"),
-            ),
-          ),
-        );
       }
+
+      if (sources.isEmpty) return;
 
       final playlist = ConcatenatingAudioSource(children: sources);
 
@@ -91,10 +93,19 @@ class AudioPlayerService {
       await _player.setAudioSource(playlist, initialIndex: initialIndex);
       _player.play();
       
-      debugPrint("DEBUG: Playback started via Local File");
     } catch (e) {
-      debugPrint("DEBUG: CRITICAL ERROR: $e");
+      debugPrint("DEBUG: CRITICAL ERROR in setPlaylist: $e");
     }
+  }
+
+  MediaItem _createMediaItem(Sholawat sholawat) {
+    return MediaItem(
+      id: sholawat.id.toString(),
+      album: "Kumpulan Sholawat",
+      title: sholawat.title,
+      artist: sholawat.category,
+      artUri: Uri.parse("https://ui-avatars.com/api/?name=${sholawat.title}&background=2E7D32&color=fff"),
+    );
   }
 
   void pause() => _player.pause();
