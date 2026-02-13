@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SupabaseService {
-  static const String _url = 'YOUR_SUPABASE_URL';
-  static const String _anonKey = 'YOUR_SUPABASE_ANON_KEY';
+  static const String _url = 'https://hqndzmrkuexrxnzcxiel.supabase.co';
+  static const String _anonKey = 'sb_publishable__qGkkh6IQNOxgGfOB6t6nQ_YOaT5_YD';
 
   static Future<void> init() async {
     await Supabase.initialize(

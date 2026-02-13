@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import '../services/local_data_service.dart';
 import '../providers/sholawat_provider.dart';
 import '../providers/settings_provider.dart';
+import '../services/supabase_service.dart';
 
 class TasbihScreen extends ConsumerStatefulWidget {
   const TasbihScreen({super.key});
@@ -67,6 +68,10 @@ class _TasbihScreenState extends ConsumerState<TasbihScreen> with SingleTickerPr
     setState(() {
       _counter++;
       _totalCount++;
+      
+      // Update Global Counter (Feature 1)
+      SupabaseService.incrementGlobalCounter();
+
       if (_counter >= _targets[_targetIndex]) {
         _counter = 0;
         HapticFeedback.heavyImpact(); 

@@ -12,6 +12,7 @@ import 'settings_screen.dart';
 import 'fadhilah_screen.dart';
 import 'doa_sebelum_screen.dart';
 import 'tasbih_screen.dart';
+import 'prayer_wall_screen.dart';
 import '../services/download_service.dart';
 import '../services/ad_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -180,6 +181,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         children: [
                           _buildDailyQuote(),
                           const SizedBox(height: 16),
+                          _buildJamiyyahCounter(),
+                          const SizedBox(height: 16),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -276,6 +279,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                               ),
                             ],
+                          ),
+                          const SizedBox(height: 12),
+                          _buildInfoCard(
+                            title: 'Dinding Doa Komunitas',
+                            subtitle: 'Kirim doa dan saling mendoakan sesama jamaah',
+                            icon: Icons.chat_bubble_outline_rounded,
+                            colors: [const Color(0xFF004D40), const Color(0xFF00695C)],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const PrayerWallScreen()),
+                              );
+                            },
                           ),
                         ],
                       ),

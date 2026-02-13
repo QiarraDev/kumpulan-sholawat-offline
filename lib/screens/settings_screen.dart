@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../providers/settings_provider.dart';
 import '../services/notification_service.dart';
+import '../services/supabase_service.dart';
+import '../providers/auth_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -110,6 +112,15 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
           ),
+          const Divider(),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Akun & Sinkronisasi',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+            ),
+          ),
+          _buildAccountSection(context, ref),
           const Divider(),
           const Padding(
             padding: EdgeInsets.all(16.0),
@@ -402,6 +413,47 @@ class SettingsScreen extends ConsumerWidget {
             child: const Text('Mengerti'),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAccountSection(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(currentUserProvider);
+
+    if (user == null) {
+      return ListTile(
+        leading: const Icon(Icons.account_circle_outlined, color: Colors.orange),
+        title: const Text('Masuk dengan Akun'),
+        subtitle: const Text('Simpan favorit & tasbih ke cloud'),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+        onTap: () async {
+          // Implement Login Logic
+          try {
+            await SupabaseService.signInWithGoogle();
+          } catch (e) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Gagal masuk: $e')),
+              );
+            }
+          }
+        },
+      );
+    }
+
+    return ListTile(
+      leading: CircleAvatar(
+        radius: 15,
+        backgroundImage: user.userMetadata?['avatar_url'] != null 
+          ? NetworkImage(user.userMetadata!['avatar_url']) 
+          : null,
+        child: user.userMetadata?['avatar_url'] == null ? const Icon(Icons.person) : null,
+      ),
+      title: Text(user.userMetadata?['full_name'] ?? 'Pengguna Sholawat'),
+      subtitle: const Text('Akun terhubung • Cloud Sync aktif'),
+      trailing: IconButton(
+        icon: const Icon(Icons.logout, size: 20, color: Colors.red),
+        onPressed: () => SupabaseService.signOut(),
       ),
     );
   }
