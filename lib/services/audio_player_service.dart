@@ -48,6 +48,17 @@ class AudioPlayerService {
     _player.durationStream.listen((d) => debugPrint("DEBUG: Duration: $d"));
     _player.positionStream.listen((p) => debugPrint("DEBUG: Position: ${p.inSeconds}s"));
     _player.playerStateStream.listen((s) => debugPrint("DEBUG: State: $s"));
+    
+    // Download sholawat yang sedang diputar saja agar tidak berat
+    _player.currentIndexStream.listen((index) {
+      if (index != null && index < _currentPlaylist.length) {
+        final sholawat = _currentPlaylist[index];
+        final fileName = sholawat.audio.split('/').last;
+        if (sholawat.url != null && sholawat.url!.isNotEmpty) {
+           DownloadService.downloadFromUrl(sholawat.url!, fileName);
+        }
+      }
+    });
   }
 
   Future<void> setPlaylist(List<Sholawat> list, int initialIndex) async {
@@ -72,7 +83,7 @@ class AudioPlayerService {
           sources.add(
             AudioSource.uri(Uri.parse(sholawat.url!), tag: _createMediaItem(sholawat)),
           );
-          DownloadService.downloadFromUrl(sholawat.url!, fileName);
+          // Download dipindah ke listener currentIndexStream agar tidak menumpuk
         } else {
           final assetPath = sholawat.audio.startsWith('assets/') 
               ? sholawat.audio 

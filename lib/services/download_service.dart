@@ -94,6 +94,20 @@ class DownloadService {
     }
   }
 
+  /// Menghapus semua file audio yang sudah di-download (Bersihkan Cache)
+  static Future<void> clearCache() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final audioDir = Directory("${directory.path}/audio");
+      if (await audioDir.exists()) {
+        await audioDir.delete(recursive: true);
+        debugPrint("DEBUG: Cache Audio BERHASIL dibersihkan");
+      }
+    } catch (e) {
+      debugPrint("DEBUG: Gagal hapus cache: $e");
+    }
+  }
+
   /// Helper untuk memindahkan dari assets ke documents (jika ingin transisi bertahap)
   static Future<String?> saveAssetToLocal(String assetPath, String fileName) async {
     try {
